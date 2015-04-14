@@ -1,11 +1,17 @@
-import {Body} from 'Body.jsx';
+import {Router} from 'Router.jsx';
+import {DashboardController} from './pages/controllers/DashboardController.jsx';
+import {FileNotFoundController} from './pages/controllers/FileNotFoundController.jsx';
 
-window.app = { domRoot: document.getElementById('mount') };
+(function() {
+    window.app = {};
 
-const render = (component) => React.render(
-    component,
-    window.app.domRoot
-);
+    window.app.router = new Router('mount');
+    var router = window.app.router;
 
-render(<Body />);
+    router.addRoute('/404', FileNotFoundController);
+    router.addRoute('/', DashboardController);
+    router.addRoute('/dashboard', DashboardController);
+
+    router.start();
+})();
 
