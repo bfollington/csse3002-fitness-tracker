@@ -4455,7 +4455,50 @@ var Router = exports.Router = (function () {
     return Router;
 })();
 
-},{"page":"/Users/Ben/Projects/Python/csse3002/webapp/node_modules/page/index.js"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Body.jsx":[function(require,module,exports){
+},{"page":"/Users/Ben/Projects/Python/csse3002/webapp/node_modules/page/index.js"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/BarChart.jsx":[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var ChartJs = require("chart.js");
+
+var BarChart = exports.BarChart = (function (_React$Component) {
+    function BarChart() {
+        _classCallCheck(this, BarChart);
+    }
+
+    _inherits(BarChart, _React$Component);
+
+    _createClass(BarChart, {
+        componentDidMount: {
+            value: function componentDidMount() {
+                var context = $(React.findDOMNode(this)).find(".chart")[0].getContext("2d");
+
+                var chart = new ChartJs(context).Bar(this.props.data, {});
+            }
+        },
+        render: {
+            value: function render() {
+                return React.createElement(
+                    "div",
+                    null,
+                    React.createElement("canvas", { className: "chart", width: "400", height: "200" })
+                );
+            }
+        }
+    });
+
+    return BarChart;
+})(React.Component);
+
+},{"chart.js":"/Users/Ben/Projects/Python/csse3002/webapp/node_modules/chart.js/Chart.js"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Body.jsx":[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4499,6 +4542,93 @@ var Body = exports.Body = (function (_React$Component) {
     return Body;
 })(React.Component);
 
+},{}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ImportDataModal.jsx":[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var ImportDataModal = exports.ImportDataModal = (function (_React$Component) {
+    function ImportDataModal() {
+        _classCallCheck(this, ImportDataModal);
+
+        if (_React$Component != null) {
+            _React$Component.apply(this, arguments);
+        }
+    }
+
+    _inherits(ImportDataModal, _React$Component);
+
+    _createClass(ImportDataModal, {
+        render: {
+            value: function render() {
+                return React.createElement(
+                    "div",
+                    { className: "modal fade" },
+                    React.createElement(
+                        "div",
+                        { className: "modal-dialog" },
+                        React.createElement(
+                            "div",
+                            { className: "modal-content" },
+                            React.createElement(
+                                "div",
+                                { className: "modal-header" },
+                                React.createElement(
+                                    "button",
+                                    { type: "button", className: "close", "data-dismiss": "modal", "aria-label": "Close" },
+                                    React.createElement(
+                                        "span",
+                                        { "aria-hidden": "true" },
+                                        "×"
+                                    )
+                                ),
+                                React.createElement(
+                                    "h4",
+                                    { className: "modal-title" },
+                                    "Connect to Device"
+                                )
+                            ),
+                            React.createElement(
+                                "div",
+                                { className: "modal-body" },
+                                React.createElement(
+                                    "p",
+                                    null,
+                                    "Import your data..."
+                                )
+                            ),
+                            React.createElement(
+                                "div",
+                                { className: "modal-footer" },
+                                React.createElement(
+                                    "button",
+                                    { type: "button", className: "btn btn-default", "data-dismiss": "modal" },
+                                    "Close"
+                                ),
+                                React.createElement(
+                                    "button",
+                                    { type: "button", className: "btn btn-primary" },
+                                    "Begin Import"
+                                )
+                            )
+                        )
+                    )
+                );
+            }
+        }
+    });
+
+    return ImportDataModal;
+})(React.Component);
+
 },{}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/LineChart.jsx":[function(require,module,exports){
 "use strict";
 
@@ -4533,7 +4663,7 @@ var LineChart = exports.LineChart = (function (_React$Component) {
                 return React.createElement(
                     "div",
                     null,
-                    React.createElement("canvas", { className: "chart", width: "300", height: "200" })
+                    React.createElement("canvas", { className: "chart", width: "400", height: "200" })
                 );
             }
         }
@@ -4542,7 +4672,108 @@ var LineChart = exports.LineChart = (function (_React$Component) {
     return LineChart;
 })(React.Component);
 
-},{"chart.js":"/Users/Ben/Projects/Python/csse3002/webapp/node_modules/chart.js/Chart.js"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Navbar.jsx":[function(require,module,exports){
+},{"chart.js":"/Users/Ben/Projects/Python/csse3002/webapp/node_modules/chart.js/Chart.js"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/MainNavbar.jsx":[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var Navbar = require("components/Navbar.jsx").Navbar;
+
+var ModalTrigger = require("components/ModalTrigger.jsx").ModalTrigger;
+
+var ImportDataModal = require("components/ImportDataModal.jsx").ImportDataModal;
+
+var MainNavbar = exports.MainNavbar = (function (_React$Component) {
+    function MainNavbar() {
+        _classCallCheck(this, MainNavbar);
+
+        if (_React$Component != null) {
+            _React$Component.apply(this, arguments);
+        }
+    }
+
+    _inherits(MainNavbar, _React$Component);
+
+    _createClass(MainNavbar, {
+        importData: {
+            value: function importData(e) {
+                e.preventDefault();
+                console.log(e);
+            }
+        },
+        render: {
+            value: function render() {
+
+                var links = [{ name: "Dashboard", url: "/", click: function click() {}, context: this, button: false }, { component: React.createElement(ModalTrigger, { modal: React.createElement(ImportDataModal, null), className: "btn btn-default navbar-btn", buttonText: "Import Data" }) }];
+
+                return React.createElement(Navbar, { links: links });
+            }
+        }
+    });
+
+    return MainNavbar;
+})(React.Component);
+
+},{"components/ImportDataModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ImportDataModal.jsx","components/ModalTrigger.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx","components/Navbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Navbar.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx":[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var ModalTrigger = exports.ModalTrigger = (function (_React$Component) {
+    function ModalTrigger() {
+        _classCallCheck(this, ModalTrigger);
+
+        if (_React$Component != null) {
+            _React$Component.apply(this, arguments);
+        }
+    }
+
+    _inherits(ModalTrigger, _React$Component);
+
+    _createClass(ModalTrigger, {
+        triggerModal: {
+            value: function triggerModal(e) {
+                e.preventDefault();
+
+                $(React.findDOMNode(this)).find(".modal").modal("show");
+            }
+        },
+        render: {
+            value: function render() {
+                return React.createElement(
+                    "span",
+                    null,
+                    React.createElement(
+                        "button",
+                        { className: this.props.className, onClick: this.triggerModal.bind(this) },
+                        this.props.buttonText
+                    ),
+                    this.props.modal
+                );
+            }
+        }
+    });
+
+    return ModalTrigger;
+})(React.Component);
+
+},{}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Navbar.jsx":[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4592,8 +4823,8 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                             ),
                             React.createElement(
                                 "a",
-                                { className: "navbar-brand", href: "#" },
-                                "MyFitnessPal™"
+                                { className: "navbar-brand", href: "/" },
+                                "Ballin Adventure™"
                             )
                         ),
                         React.createElement(
@@ -4603,15 +4834,36 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                                 "ul",
                                 { className: "nav navbar-nav" },
                                 this.props.links.map(function (entry) {
-                                    return React.createElement(
-                                        "li",
-                                        null,
-                                        React.createElement(
-                                            "a",
-                                            { href: entry.url, onClick: entry.click.bind(entry.context) },
-                                            entry.name
-                                        )
-                                    );
+
+                                    if (typeof entry.component != "undefined") {
+                                        return React.createElement(
+                                            "li",
+                                            null,
+                                            entry.component
+                                        );
+                                    } else {
+                                        if (entry.button) {
+                                            return React.createElement(
+                                                "li",
+                                                null,
+                                                React.createElement(
+                                                    "button",
+                                                    { className: "btn btn-default navbar-btn", onClick: entry.click.bind(entry.context) },
+                                                    entry.name
+                                                )
+                                            );
+                                        } else {
+                                            return React.createElement(
+                                                "li",
+                                                null,
+                                                React.createElement(
+                                                    "a",
+                                                    { href: entry.url, onClick: entry.click.bind(entry.context) },
+                                                    entry.name
+                                                )
+                                            );
+                                        }
+                                    }
                                 })
                             ),
                             React.createElement(
@@ -4619,20 +4871,11 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                                 { className: "nav navbar-nav navbar-right" },
                                 React.createElement(
                                     "li",
-                                    null,
-                                    React.createElement(
-                                        "a",
-                                        { href: "#" },
-                                        "Link"
-                                    )
-                                ),
-                                React.createElement(
-                                    "li",
                                     { className: "dropdown" },
                                     React.createElement(
                                         "a",
                                         { href: "#", className: "dropdown-toggle", "data-toggle": "dropdown", role: "button", "aria-expanded": "false" },
-                                        "Dropdown ",
+                                        "Settings ",
                                         React.createElement("span", { className: "caret" })
                                     ),
                                     React.createElement(
@@ -4644,7 +4887,7 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                                             React.createElement(
                                                 "a",
                                                 { href: "#" },
-                                                "Action"
+                                                "Your Device"
                                             )
                                         ),
                                         React.createElement(
@@ -4653,16 +4896,7 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                                             React.createElement(
                                                 "a",
                                                 { href: "#" },
-                                                "Another action"
-                                            )
-                                        ),
-                                        React.createElement(
-                                            "li",
-                                            null,
-                                            React.createElement(
-                                                "a",
-                                                { href: "#" },
-                                                "Something else here"
+                                                "Application Settings"
                                             )
                                         ),
                                         React.createElement("li", { className: "divider" }),
@@ -4672,7 +4906,7 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                                             React.createElement(
                                                 "a",
                                                 { href: "#" },
-                                                "Separated link"
+                                                "Logout"
                                             )
                                         )
                                     )
@@ -4688,7 +4922,93 @@ var Navbar = exports.Navbar = (function (_React$Component) {
     return Navbar;
 })(React.Component);
 
-},{}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/DashboardPage.jsx":[function(require,module,exports){
+},{}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/PieChart.jsx":[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var ChartJs = require("chart.js");
+
+var PieChart = exports.PieChart = (function (_React$Component) {
+    function PieChart() {
+        _classCallCheck(this, PieChart);
+    }
+
+    _inherits(PieChart, _React$Component);
+
+    _createClass(PieChart, {
+        componentDidMount: {
+            value: function componentDidMount() {
+                var context = $(React.findDOMNode(this)).find(".chart")[0].getContext("2d");
+
+                var chart = new ChartJs(context).Pie(this.props.data, {});
+            }
+        },
+        render: {
+            value: function render() {
+                return React.createElement(
+                    "div",
+                    null,
+                    React.createElement("canvas", { className: "chart", width: "400", height: "200" })
+                );
+            }
+        }
+    });
+
+    return PieChart;
+})(React.Component);
+
+},{"chart.js":"/Users/Ben/Projects/Python/csse3002/webapp/node_modules/chart.js/Chart.js"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/RadarChart.jsx":[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var ChartJs = require("chart.js");
+
+var RadarChart = exports.RadarChart = (function (_React$Component) {
+    function RadarChart() {
+        _classCallCheck(this, RadarChart);
+    }
+
+    _inherits(RadarChart, _React$Component);
+
+    _createClass(RadarChart, {
+        componentDidMount: {
+            value: function componentDidMount() {
+                var context = $(React.findDOMNode(this)).find(".chart")[0].getContext("2d");
+
+                var chart = new ChartJs(context).Radar(this.props.data, {});
+            }
+        },
+        render: {
+            value: function render() {
+                return React.createElement(
+                    "div",
+                    null,
+                    React.createElement("canvas", { className: "chart", width: "400", height: "200" })
+                );
+            }
+        }
+    });
+
+    return RadarChart;
+})(React.Component);
+
+},{"chart.js":"/Users/Ben/Projects/Python/csse3002/webapp/node_modules/chart.js/Chart.js"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/DashboardPage.jsx":[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4705,7 +5025,13 @@ var Body = require("components/Body.jsx").Body;
 
 var LineChart = require("components/LineChart.jsx").LineChart;
 
-var Navbar = require("components/Navbar.jsx").Navbar;
+var BarChart = require("components/BarChart.jsx").BarChart;
+
+var RadarChart = require("components/RadarChart.jsx").RadarChart;
+
+var PieChart = require("components/PieChart.jsx").PieChart;
+
+var MainNavbar = require("components/MainNavbar.jsx").MainNavbar;
 
 var DashboardPage = exports.DashboardPage = (function (_React$Component) {
     function DashboardPage() {
@@ -4718,7 +5044,7 @@ var DashboardPage = exports.DashboardPage = (function (_React$Component) {
         render: {
             value: function render() {
 
-                var chartData = {
+                var lineChartData = {
                     labels: ["January", "February", "March", "April", "May", "June", "July"],
                     datasets: [{
                         label: "My First dataset",
@@ -4741,10 +5067,69 @@ var DashboardPage = exports.DashboardPage = (function (_React$Component) {
                     }]
                 };
 
+                var pieChartData = [{
+                    value: 300,
+                    color: "#F7464A",
+                    highlight: "#FF5A5E",
+                    label: "Red"
+                }, {
+                    value: 50,
+                    color: "#46BFBD",
+                    highlight: "#5AD3D1",
+                    label: "Green"
+                }, {
+                    value: 100,
+                    color: "#FDB45C",
+                    highlight: "#FFC870",
+                    label: "Yellow"
+                }];
+
+                var barChartdata = {
+                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    datasets: [{
+                        label: "My First dataset",
+                        fillColor: "rgba(220,220,220,0.5)",
+                        strokeColor: "rgba(220,220,220,0.8)",
+                        highlightFill: "rgba(220,220,220,0.75)",
+                        highlightStroke: "rgba(220,220,220,1)",
+                        data: [65, 59, 80, 81, 56, 55, 40]
+                    }, {
+                        label: "My Second dataset",
+                        fillColor: "rgba(151,187,205,0.5)",
+                        strokeColor: "rgba(151,187,205,0.8)",
+                        highlightFill: "rgba(151,187,205,0.75)",
+                        highlightStroke: "rgba(151,187,205,1)",
+                        data: [28, 48, 40, 19, 86, 27, 90]
+                    }]
+                };
+
+                var radarChartData = {
+                    labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
+                    datasets: [{
+                        label: "My First dataset",
+                        fillColor: "rgba(220,220,220,0.2)",
+                        strokeColor: "rgba(220,220,220,1)",
+                        pointColor: "rgba(220,220,220,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        data: [65, 59, 90, 81, 56, 55, 40]
+                    }, {
+                        label: "My Second dataset",
+                        fillColor: "rgba(151,187,205,0.2)",
+                        strokeColor: "rgba(151,187,205,1)",
+                        pointColor: "rgba(151,187,205,1)",
+                        pointStrokeColor: "#fff",
+                        pointHighlightFill: "#fff",
+                        pointHighlightStroke: "rgba(151,187,205,1)",
+                        data: [28, 48, 40, 19, 96, 27, 100]
+                    }]
+                };
+
                 return React.createElement(
                     "div",
                     null,
-                    React.createElement(Navbar, { links: [{ name: "Test", url: "test", click: function click() {}, context: this }] }),
+                    React.createElement(MainNavbar, null),
                     React.createElement(
                         "div",
                         { className: "container" },
@@ -4754,12 +5139,26 @@ var DashboardPage = exports.DashboardPage = (function (_React$Component) {
                             React.createElement(
                                 "div",
                                 { className: "col-xs-6" },
-                                React.createElement(Body, null)
+                                React.createElement(LineChart, { data: lineChartData })
                             ),
                             React.createElement(
                                 "div",
                                 { className: "col-xs-6" },
-                                React.createElement(LineChart, { data: chartData })
+                                React.createElement(PieChart, { data: pieChartData })
+                            )
+                        ),
+                        React.createElement(
+                            "div",
+                            { className: "row" },
+                            React.createElement(
+                                "div",
+                                { className: "col-xs-6" },
+                                React.createElement(BarChart, { data: barChartdata })
+                            ),
+                            React.createElement(
+                                "div",
+                                { className: "col-xs-6" },
+                                React.createElement(RadarChart, { data: radarChartData })
                             )
                         )
                     )
@@ -4771,7 +5170,7 @@ var DashboardPage = exports.DashboardPage = (function (_React$Component) {
     return DashboardPage;
 })(React.Component);
 
-},{"components/Body.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Body.jsx","components/LineChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/LineChart.jsx","components/Navbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Navbar.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/FileNotFoundPage.jsx":[function(require,module,exports){
+},{"components/BarChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/BarChart.jsx","components/Body.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Body.jsx","components/LineChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/LineChart.jsx","components/MainNavbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/MainNavbar.jsx","components/PieChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/PieChart.jsx","components/RadarChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/RadarChart.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/FileNotFoundPage.jsx":[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -4784,7 +5183,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var Navbar = require("components/Navbar.jsx").Navbar;
+var MainNavbar = require("components/MainNavbar.jsx").MainNavbar;
 
 var FileNotFoundPage = exports.FileNotFoundPage = (function (_React$Component) {
     function FileNotFoundPage() {
@@ -4800,7 +5199,7 @@ var FileNotFoundPage = exports.FileNotFoundPage = (function (_React$Component) {
                 return React.createElement(
                     "div",
                     null,
-                    React.createElement(Navbar, { links: [{ name: "Test", url: "test", click: function click() {}, context: this }] }),
+                    React.createElement(MainNavbar, null),
                     React.createElement(
                         "div",
                         { className: "container" },
@@ -4818,7 +5217,7 @@ var FileNotFoundPage = exports.FileNotFoundPage = (function (_React$Component) {
     return FileNotFoundPage;
 })(React.Component);
 
-},{"components/Navbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Navbar.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/controllers/DashboardController.jsx":[function(require,module,exports){
+},{"components/MainNavbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/MainNavbar.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/controllers/DashboardController.jsx":[function(require,module,exports){
 "use strict";
 
 exports.DashboardController = DashboardController;
