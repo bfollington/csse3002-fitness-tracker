@@ -1,4 +1,5 @@
 import page from 'page';
+import {FileNotFoundPage} from "pages/FileNotFoundPage.jsx";
 
 export class Router {
     constructor(mountPointId) {
@@ -16,33 +17,15 @@ export class Router {
 
         var me = this;
 
-        page("*", function(ctx, next) {
-            if (typeof me.routes[ctx.path] == "undefined") {
-                console.error("404");
-                page.redirect("/404");
-            } else {
-                next();
-            }
-        });
-
-        page('*', function(ctx,  next) {
-            // No initial transition
-            if (ctx.init) {
-                next();
-            } else {
-                window.app.mountPoint.classList.add('transition');
-                setTimeout(function(){
-                    window.app.mountPoint.classList.remove('transition');
-                    next();
-                }, 200);
-            }
-        });
-
-
         for (var i in this.routes)
         {
             page(i, this.routes[i]);
         }
+
+        page("*", function(ctx, next) {
+            console.error("404", ctx, next);
+            React.render(<FileNotFoundPage />, window.app.mountPoint);
+        });
 
         page();
     }

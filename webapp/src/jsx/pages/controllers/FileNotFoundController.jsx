@@ -1,5 +1,6 @@
 import {FileNotFoundPage} from "pages/FileNotFoundPage.jsx";
+import {transition} from "pages/controllers/PageTransition.jsx";
 
 export function FileNotFoundController(ctx, next) {
-    React.render(<FileNotFoundPage />, window.app.mountPoint);
+    transition(ctx, next, <FileNotFoundPage />);
 }
