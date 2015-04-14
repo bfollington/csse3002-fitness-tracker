@@ -2,9 +2,7 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
 
 import cgi
-import base64
 import json
-import cStringIO
 import time
 
 
@@ -31,9 +29,14 @@ class FTServer(SimpleHTTPRequestHandler):
         are within the dist folder, so /dist is prepended to every path.
         This method is called by SimpleHTTPRequestHandler on every request.
         """
-        #if path.startswith("/js") or path.startswith("/css"):
-        # Serve everything from /dist
-        path = "/dist{0}".format(path)
+        if path.startswith("/js") or path.startswith("/css"):
+            # Serve everything from /dist
+            path = "/dist{0}".format(path)
+        elif path.startswith("/api"):
+            pass
+        elif not "." in path:
+            # Any route without a file extension should serve the index
+            path = "/dist/index.html"
 
         return SimpleHTTPRequestHandler.translate_path(self, path)
 
@@ -46,6 +49,7 @@ class FTServer(SimpleHTTPRequestHandler):
         print "[{date_time}] {path}".format(
             date_time=self.log_date_time_string(),
             path=(format % args))
+
 
     """
     All GET requests for static resources are handled by
@@ -67,9 +71,9 @@ class FTServer(SimpleHTTPRequestHandler):
                      })
 
         # Set the headers for the response
-        self._set_headers("text/html")
+        self._set_headers("text/json")
 
-        if (self.path == "/load_example"):
+        if (self.path == "/api/load_example"):
             """
             Example for parsing a POST request to load data from a file.
             """
@@ -86,7 +90,7 @@ class FTServer(SimpleHTTPRequestHandler):
             resp = json.dumps({"success": False, "error": "Invalid load request."})
             return
 
-        if (self.path == "/save_example"):
+        if (self.path == "/api/save_example"):
             """
             Example for parsing a POST request to save data to a file.
             """
