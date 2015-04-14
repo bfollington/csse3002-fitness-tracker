@@ -4,6 +4,7 @@ export class Body extends React.Component {
         return (
             <div>
                 Hello there!
+                <a href="/dashboard">Dashboard</a>
             </div>
         );
     }

@@ -12,3 +12,14 @@ body {
     height: 100%;
 }
 
+#mount {
+  position: relative;
+  opacity: 1;
+  -webkit-transition: -webkit-transform 200ms ease-out, opacity 200ms ease-out;
+}
+
+#mount.transition {
+  -webkit-transform: translateX(100px);
+  opacity: 0;
+}
+
