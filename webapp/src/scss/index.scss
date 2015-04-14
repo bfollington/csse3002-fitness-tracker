@@ -10,6 +10,8 @@ body {
     font-family: "Helvetica Neue";
 
     height: 100%;
+
+    background-color: $color-theme-50;
 }
 
 #mount {
@@ -21,5 +23,39 @@ body {
 #mount.transition {
   -webkit-transform: translateX(100px);
   opacity: 0;
+}
+
+.navbar {
+    background-color: $color-theme-800;
+
+    padding-top: 1em;
+    padding-bottom: 1em;
+
+    .navbar-header > a {
+        color: $color-theme-0;
+
+        &:hover {
+            color: $color-theme-200;
+        }
+    }
+
+    .navbar-nav > li > a {
+        color: $color-theme-50;
+
+        &:hover {
+            color: $color-theme-200;
+        }
+    }
+
+    .btn-default {
+        background-color: $color-theme-800;
+        color: $color-theme-50;
+
+        border-width: 1px;
+
+        &:hover {
+            background-color: $color-theme-700;
+        }
+    }
 }
 
