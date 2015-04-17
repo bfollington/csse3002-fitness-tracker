@@ -2,15 +2,15 @@ export class ModalTrigger extends React.Component {
     triggerModal(e) {
         e.preventDefault();
 
-        $(React.findDOMNode(this)).find(".modal").modal("show");
+        React.render(this.props.modal, $('#modal_mount')[0]);
+        $('#modal_mount').find(".modal").modal("show");
     }
 
     render() {
         return(
-            <span>
+            <div className="inline-block">
                 <button className={this.props.className} onClick={this.triggerModal.bind(this)}>{this.props.buttonText}</button>
-                {this.props.modal}
-            </span>
+            </div>
         );
     }
 }

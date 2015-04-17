@@ -1,6 +1,6 @@
-@import 'reset';
 @import 'mixins';
 @import 'variables';
+@import 'util';
 
 html {
     height: 100%;
@@ -23,6 +23,16 @@ body {
 #mount.transition {
   -webkit-transform: translateX(100px);
   opacity: 0;
+}
+
+.modal {
+    text-align: left;
+}
+
+.map-canvas {
+    height: 320px;
+    margin: 0;
+    padding: 0;
 }
 
 .navbar {

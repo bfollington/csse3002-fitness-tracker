@@ -4,10 +4,16 @@ import {BarChart} from "components/BarChart.jsx";
 import {RadarChart} from "components/RadarChart.jsx";
 import {PieChart} from "components/PieChart.jsx";
 import {MainNavbar} from "components/MainNavbar.jsx";
+import {ModalTrigger} from "components/ModalTrigger.jsx";
+import {ImportDataModal} from "components/ImportDataModal.jsx";
 
 export class DashboardPage extends React.Component {
     constructor() {
 
+    }
+
+    getLastRun() {
+        return false;
     }
 
     render() {
@@ -107,10 +113,28 @@ export class DashboardPage extends React.Component {
             ]
         };
 
+        var content = null;
+
+        if (!this.getLastRun()) {
+            content = (
+                <div className="row alert alert-warning" role="alert">
+                    <div className="col-xs-12">
+                        <p className="center-text">
+                            You haven't added any run data yet, when you import your first run you'll be able to see information about your fitness here.
+                        </p>
+                        <div className="center-text">
+                            <ModalTrigger modal={<ImportDataModal />} className="btn btn-default navbar-btn margin-left margin-right" buttonText="Import Data" />
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div>
                 <MainNavbar />
                 <div className="container">
+                    {content}
                     <div className="row">
                         <div className="col-xs-6">
                             <LineChart data={lineChartData} />
