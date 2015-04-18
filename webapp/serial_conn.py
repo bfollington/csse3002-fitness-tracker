@@ -3,7 +3,7 @@ from serial.tools import list_ports
 
 class SerialConnector():	
 	def __init__(self):
-		self.baudrate = 9600
+		self.baudrate = 115200
 		self.current_ports = []
 		self.port_names = []
 		self.connected = False
