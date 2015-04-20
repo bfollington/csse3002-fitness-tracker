@@ -1,10 +1,6 @@
 // Code for basic hardware testing of Team Fitness Tracker's
 // prototype Fitness Tracking Wearable(c).
 //
-// This code shows how to listen to the GPS module in an interrupt
-// which allows the program to have more 'freedom' - just parse
-// when a new NMEA sentence is available! Then access data when
-// desired.
 // #Note: Ensure that the Adafruit Flora board is installed on
 //        the Arduino IDE and the Arduino GPS library is added.
 //
@@ -94,10 +90,7 @@ void loop()                     // run over and over again
       Serial.print("Altitude: "); Serial.println(GPS.altitude);
       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
     }
-  }
-  
-  // Turn the vibration device off or on for one second
-  if (millis() - timer > 1000) {
+    
     // Change the vibration state
     vibrationState = ~vibrationState;
     
