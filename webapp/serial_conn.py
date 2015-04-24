@@ -40,12 +40,14 @@ class SerialConnector():
 		
 		#Connect
 		self.s.write("CONNECT\n")
-		if not self.s.readline() == "OK":
+		reply = self.s.readline()
+		if not reply == "OK\n":
+			print reply
 			return False
 			
 		self.connected = True
+		print "Connected successfully."
 		return True
-	
 	'''
 	Reads all the available run data from the serial connection.
 	Returns the exact string reply the device sends to us, with no formatting or processing.
@@ -56,7 +58,7 @@ class SerialConnector():
 			
 		#Query for run data
 		self.s.write("RUNDATA\n")
-		runData = self.s.readline()
+		runData = self.s.readline().strip()
 		
 		#Just return what we got from the Flora directly
 		return runData
@@ -71,11 +73,11 @@ class SerialConnector():
 				
 		#Count runs
 		self.s.write("COUNTRUNS\n")
-		runCount = int(self.s.readline())
+		runCount = int(self.s.readline().strip())
 		
 		#Get last run
 		self.s.write("RUNDATA " + str(runCount - 1) + "\n")
-		runDataStr = self.s.readline()
+		runDataStr = self.s.readline().strip()
 		runData = runDataStr.split(",")[:-1]
 		
 		return runData
