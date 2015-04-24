@@ -46,9 +46,11 @@ class SerialConnector():
 		#Get last run
 		self.s.write("RUNDATA " + str(runCount - 1) + "\n")
 		runDataStr = self.s.readline()
-		runData = runDataStr.split(",")[:-1]
+		#Don't format the data yet, simply return what we get from the Flora
+		#Proper formatting will be done in a later sprint
+		#runData = runDataStr.split(",")[:-1]
 		
-		return runData
+		return runDataStr
 		
 	def send_command(self, command_str):
 		#Commands will be expanded to include passwords, etc in a future sprint. Only basic GPS data access is available in this sprint, through read_last_run()
