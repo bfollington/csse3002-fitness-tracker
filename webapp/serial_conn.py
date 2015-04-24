@@ -1,6 +1,9 @@
 import serial
 from serial.tools import list_ports
 
+'''
+A class which wraps the serial package to provide an interface to connect with the GPS tracking hardware. 
+'''
 class SerialConnector():	
 	def __init__(self):
 		self.baudrate = 115200
@@ -10,23 +13,31 @@ class SerialConnector():
 		self.s = None
 		self.refresh_list();
 
+	'''
+	Returns the display names of the currently connected serial ports.
+	'''
 	def get_port_names(self):
 		return self.port_names
-		
+	
+	'''
+	Refreshes the current port listing. Call get_port_names() again to get the new port names.
+	'''
 	def refresh_list(self):
 		self.current_ports = list(list_ports.comports())
 		self.port_names = []
 		for port in self.current_ports:
 			self.port_names.append(port[1])
 
+	'''
+	Attempts to connect to the specified serial port index. The index must correspond to a value in current_ports.
+	'''
 	def connect(self, index):
 		if (index < 0 or index >= len(self.current_ports)):
 			return False
 		self.s = serial.Serial(self.current_ports[index][0], self.baudrate, writeTimeout=1, timeout=1)
 		if not self.s.isOpen():
 			return False
-			
-		#TODO: confirm Jamie's "expected" connect message		
+		
 		#Connect
 		self.s.write("CONNECT\n")
 		if not self.s.readline() == "OK":
@@ -35,6 +46,25 @@ class SerialConnector():
 		self.connected = True
 		return True
 	
+	'''
+	Reads all the available run data from the serial connection.
+	Returns the exact string reply the device sends to us, with no formatting or processing.
+	'''
+	def read_all_runs_raw(self):
+		if not self.connected:
+			return None
+			
+		#Query for run data
+		self.s.write("RUNDATA\n")
+		runData = self.s.readline()
+		
+		#Just return what we got from the Flora directly
+		return runData
+	
+	'''
+	Reads the data from the most recent run from the serial connection. 		
+	TODO: Not used right now as it isn't implemented on the Flora. Use read_all_data instead.		
+	'''
 	def read_last_run(self):
 		if not self.connected:
 			return None
@@ -46,16 +76,20 @@ class SerialConnector():
 		#Get last run
 		self.s.write("RUNDATA " + str(runCount - 1) + "\n")
 		runDataStr = self.s.readline()
-		#Don't format the data yet, simply return what we get from the Flora
-		#Proper formatting will be done in a later sprint
-		#runData = runDataStr.split(",")[:-1]
+		runData = runDataStr.split(",")[:-1]
 		
-		return runDataStr
-		
+		return runData
+	
+	'''
+	Sends a command to the device.
+	'''
 	def send_command(self, command_str):
 		#Commands will be expanded to include passwords, etc in a future sprint. Only basic GPS data access is available in this sprint, through read_last_run()
 		pass
-		
+	
+	'''
+	Closes the serial connection.
+	'''
 	def close(self):
 		if not self.connected:
 			return
