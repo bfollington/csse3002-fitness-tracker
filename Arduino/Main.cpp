@@ -8,6 +8,8 @@
 GPSInterface gps;
 
 uint32_t timer = millis();
+String command; // first line to be read
+String rundata; // data from jamies function
  
 void setup() {
 	Serial.begin(115200);
@@ -53,5 +55,17 @@ void loop() {
 			Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
 		}
 	}
+	
+	
+	if (Serial.available() > 0) {
+    command = Serial.readStringUntil('\n');
+    if (command == "CONNECT") {
+      Serial.println("OK");
+    }
+    if (command == "RUNDATA") {
+      rundata = getrundata();    //call jamies function 
+      Serial.write(rundata);    
+    }
+  }
 }
 
