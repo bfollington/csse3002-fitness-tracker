@@ -29,7 +29,7 @@ class FTServer(SimpleHTTPRequestHandler):
         are within the dist folder, so /dist is prepended to every path.
         This method is called by SimpleHTTPRequestHandler on every request.
         """
-        if path.startswith("/js") or path.startswith("/css"):
+        if path.startswith("/js") or path.startswith("/css") or path.startswith("/img"):
             # Serve everything from /dist
             path = "/dist{0}".format(path)
         elif path.startswith("/api"):
