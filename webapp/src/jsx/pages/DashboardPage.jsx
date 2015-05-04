@@ -9,11 +9,19 @@ import {ImportDataModal} from "components/ImportDataModal.jsx";
 
 export class DashboardPage extends React.Component {
     constructor() {
-
+        this.state = {
+            runs: null
+        }
     }
 
-    getLastRun() {
-        return false;
+    componentDidMount() {
+        $.get("/api/all_runs", function(result) {
+            if (result.success != false) {
+                this.setState({
+                    runs: result
+                });
+            }
+        }.bind(this));
     }
 
     render() {
@@ -115,7 +123,7 @@ export class DashboardPage extends React.Component {
 
         var content = null;
 
-        if (!this.getLastRun()) {
+        if (!this.state.runs) {
             content = (
                 <div className="row alert alert-warning" role="alert">
                     <div className="col-xs-12">
@@ -137,7 +145,14 @@ export class DashboardPage extends React.Component {
                     {content}
                     <div className="row">
                         <div className="col-xs-6">
-                            <LineChart data={lineChartData} />
+                            <ul>
+                            {
+                                this.state.runs ?
+                                    this.state.runs.map( function(run) {
+                                        return (<li><a href={"/run/" + run._id["$oid"]}>Run at {run.start_time}</a></li>);
+                                    }) : ""
+                            }
+                            </ul>
                         </div>
                         <div className="col-xs-6">
                             <PieChart data={pieChartData} />

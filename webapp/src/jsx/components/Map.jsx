@@ -4,11 +4,12 @@ export class Map extends React.Component {
     }
 
     componentDidMount() {
-        var runPath = [
-            new google.maps.LatLng(-27.4982923, 153.0105613),
-            new google.maps.LatLng(-27.4963128,153.0112909),
-            new google.maps.LatLng(-27.4969314,153.0077718)
-        ];
+
+        var runPath = [];
+
+        for (var i = 0; i < this.props.waypoints.length; i++) {
+            runPath.push( new google.maps.LatLng(this.props.waypoints[i].lat, this.props.waypoints[i].lon) );
+        }
 
         var mapOptions = {
             zoom: 30,
@@ -17,8 +18,6 @@ export class Map extends React.Component {
         };
 
         var map = new google.maps.Map($(React.findDOMNode(this)).find(".map-canvas")[0], mapOptions);
-
-
 
         var runPathPolyLine = new google.maps.Polyline({
             path: runPath,
