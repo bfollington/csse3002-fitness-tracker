@@ -145,14 +145,31 @@ export class DashboardPage extends React.Component {
                     {content}
                     <div className="row">
                         <div className="col-xs-6">
-                            <ul>
-                            {
-                                this.state.runs ?
-                                    this.state.runs.map( function(run) {
-                                        return (<li><a href={"/run/" + run._id["$oid"]}>Run at {run.start_time}</a></li>);
-                                    }) : ""
-                            }
-                            </ul>
+                            <h2>Recent Runs</h2>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {
+                                        this.state.runs ?
+                                            this.state.runs.map( function(run) {
+                                                return (
+                                                    <tr>
+                                                        <td>{run.start_time}</td>
+                                                        <td>{run.end_time}</td>
+                                                        <td><a href={"/run/" + run._id["$oid"]}>View</a></td>
+                                                    </tr>
+                                                );
+                                            }) : ""
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                         <div className="col-xs-6">
                             <PieChart data={pieChartData} />
