@@ -2,8 +2,11 @@ from SimpleHTTPServer import SimpleHTTPRequestHandler
 from BaseHTTPServer import HTTPServer
 
 import cgi
-import json
+from bson.json_util import dumps
 import time
+from serial_conn import SerialConnector
+
+import db
 
 
 class FTServer(SimpleHTTPRequestHandler):
@@ -12,6 +15,12 @@ class FTServer(SimpleHTTPRequestHandler):
     An extension of SimpleHTTPRequestHandler that can handle custom POST
     requests.
     """
+
+    def __init__(self, request, client_address, server):
+        self.db = db.RunDatabase()
+        self.serial = SerialConnector()
+
+        SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
 
     def _set_headers(self, content_type='text/html'):
         """
@@ -29,7 +38,8 @@ class FTServer(SimpleHTTPRequestHandler):
         are within the dist folder, so /dist is prepended to every path.
         This method is called by SimpleHTTPRequestHandler on every request.
         """
-        if path.startswith("/js") or path.startswith("/css"):
+
+        if path.startswith("/js") or path.startswith("/css") or path.startswith("/img"):
             # Serve everything from /dist
             path = "/dist{0}".format(path)
         elif path.startswith("/api"):
@@ -39,6 +49,62 @@ class FTServer(SimpleHTTPRequestHandler):
             path = "/dist/index.html"
 
         return SimpleHTTPRequestHandler.translate_path(self, path)
+
+    def do_GET(self):
+        """
+        Handle all GET requests. All non-api requests are passed through to the
+        default SimpleHTTPRequestHandler implementation.
+        """
+
+        if self.path.startswith("/api"):
+            self._set_headers("application/json")
+
+            if self.path.startswith("/api/run"):
+                return self.api_run_request()
+
+            if self.path.startswith("/api/latest_run"):
+                return self.api_latest_run_request()
+
+            if self.path.startswith("/api/all_runs"):
+                return self.api_all_runs_request()
+
+            return self.get_routes[self.path]()
+
+        return SimpleHTTPRequestHandler.do_GET(self)
+
+    def api_run_request(self):
+
+        run_id = self.path.replace("/api/run/", "")
+        run = self.db.get_run_with_waypoints(run_id)
+
+        if run:
+            self.wfile.write( dumps( run.to_dict() ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
+        self.wfile.close()
+
+    def api_latest_run_request(self):
+
+        run = self.db.get_latest_run()
+
+        if run:
+            self.wfile.write( dumps( run.to_dict() ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "No runs have been stored."} ) )
+
+        self.wfile.close()
+
+    def api_all_runs_request(self):
+
+        runs = self.db.get_run_list()
+
+        if runs:
+            self.wfile.write( dumps( runs ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "Could not retrieve runs."} ) )
+
+        self.wfile.close()
+
 
     def log_message(self, format, *args):
         """
@@ -62,12 +128,17 @@ class FTServer(SimpleHTTPRequestHandler):
         it based on the path requested.
         """
 
+        if self.headers.get('Content-Type'):
+            content_type = self.headers['Content-Type']
+        else:
+            content_type = None
+
         # Parse the post headers into a form object
         form = cgi.FieldStorage(
             fp=self.rfile,
             headers=self.headers,
             environ={'REQUEST_METHOD': 'POST',
-                     'CONTENT_TYPE': self.headers['Content-Type'],
+                     'CONTENT_TYPE': content_type,
                      })
 
         # Set the headers for the response
@@ -104,6 +175,31 @@ class FTServer(SimpleHTTPRequestHandler):
 
             # If no base64_image field was present, the upload is invalid
             resp = json.dumps({"success": False, "error": "Invalid save request."})
+            self.wfile.write(resp)
+            return
+
+        if (self.path == "/api/import_data"):
+            """
+            Import data from a connected run tracker. If no device is connected, then
+            return an error.
+            """
+
+            self.serial.refresh_list()
+            ports = self.serial.get_port_names()
+            run_tracker_port = None
+            resp = None
+
+            # TODO: Need to loop through the ports and try to find the Flora
+
+            # If we found the device, dump the data.
+            # TODO: store the data in the DB, rather than just returning it to the frontend
+            if run_tracker_port:
+                self.serial.connect(run_tracker_port)
+                run_data = self.serial.read_all_runs_raw()
+                resp = dumps(run_data)
+            else:
+                resp = dumps({"success": False, "error": "Device could not be reached."})
+
             self.wfile.write(resp)
             return
 
