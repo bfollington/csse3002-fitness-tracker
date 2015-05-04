@@ -68,9 +68,15 @@ class RunDatabase:
 
 
     def get_latest_run( self ):
-        run = self.db.runs.find_one( sort = [ ( "end_time", -1 ) ] )
 
-        return Run.from_mongo_obj( run )
+        try:
+            run = self.db.runs.find_one( sort = [ ( "end_time", -1 ) ] )
+            return Run.from_mongo_obj( run )
+
+        except:
+            print("Run not found.")
+            return False
+
 
     def get_run_list( self ):
         runs = self.db.runs.find( {}, { "start_time": 1, "end_time": 1 } )
@@ -85,8 +91,24 @@ class RunDatabase:
         return [ parse_mongo_obj( run ) for run in runs ]
 
     def get_waypoints_for( self, id ):
-        wps = self.db.runs.find_one( {'_id': ObjectId( id ) }, { 'waypoints': 1 } )[ u'waypoints' ]
-        return [ Waypoint.from_mongo_obj( wp ) for wp in wps ]
+
+        try:
+            wps = self.db.runs.find_one( {'_id': ObjectId( id ) }, { 'waypoints': 1 } )[ u'waypoints' ]
+            return [ Waypoint.from_mongo_obj( wp ) for wp in wps ]
+
+        except:
+            print("Run not found.")
+            return False
+
+    def get_run_with_waypoints( self, id ):
+
+        try:
+            run = self.db.runs.find_one( {'_id': ObjectId( id ) } )
+            return Run.from_mongo_obj( run )
+
+        except:
+            print("Run not found.")
+            return False
 
 
 def demo_insert( db ):
