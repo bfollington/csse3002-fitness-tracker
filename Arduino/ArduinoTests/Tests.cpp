@@ -32,13 +32,14 @@ void Test::run() {
 		std::cout << " ";
 	}
 
-	if (method(this) && checkOutput()) {
+	bool passed = method(this);
+	if (passed && checkOutput()) {
 		setColour(0x02);
 		std::cout << "Passed\n";
 		setColour(0x08);
 	} else {
 		setColour(0x04);
-		std::cout << "Failed\n";
+		std::cout << "Failed" << (passed ? "" : " (False)") << "\n";
 		setColour(0x08);
 
 		std::cout << "Expected: '";
@@ -59,5 +60,5 @@ void Test::run() {
 
 int main(int argc, const char **argv) {
 	Tests::Run();
-	Sleep(10000);
+	Sleep(100000);
 }
