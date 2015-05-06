@@ -39,7 +39,7 @@ export class RunDataPage extends React.Component {
             body = (
                 <div className="container">
                     <div className="row">
-                        <h1>Your Run on {this.state.run.start_time}</h1>
+                        <h1>Your Run on {window.app.moment(this.state.run.start_time * 1000).format(window.app.dayFormat)}</h1>
                         <Map waypoints={this.state.run.waypoints} />
                     </div>
                 </div>

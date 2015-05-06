@@ -17,7 +17,7 @@ body {
 #mount {
   position: relative;
   opacity: 1;
-  -webkit-transition: -webkit-transform 200ms ease-out, opacity 200ms ease-out;
+  -webkit-transition: -webkit-transform 350ms ease-out, opacity 350ms ease-out;
 }
 
 #mount.transition {
@@ -30,7 +30,7 @@ body {
 }
 
 .map-canvas {
-    height: 320px;
+    height: 480px;
     margin: 0;
     padding: 0;
 }
