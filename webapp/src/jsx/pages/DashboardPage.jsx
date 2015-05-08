@@ -161,8 +161,8 @@ export class DashboardPage extends React.Component {
                                             this.state.runs.map( function(run) {
                                                 return (
                                                     <tr>
-                                                        <td>{run.start_time}</td>
-                                                        <td>{run.end_time}</td>
+                                                        <td>{window.app.moment(run.start_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.start_time * 1000).format(window.app.dayFormat)}</td>
+                                                        <td>{window.app.moment(run.end_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.end_time * 1000).format(window.app.dayFormat)}</td>
                                                         <td><a href={"/run/" + run._id["$oid"]}>View</a></td>
                                                     </tr>
                                                 );
