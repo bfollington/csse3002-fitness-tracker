@@ -43,11 +43,11 @@ void loop() {
 
 	// Vibrate to notify start of run
 	digitalWrite(VIB_PIN, HIGH);
-	delay(500);
+	delay(1000);
 	digitalWrite(VIB_PIN, LOW);
-	delay(50);
+	delay(100);
 	digitalWrite(VIB_PIN, HIGH);
-	delay(500);
+	delay(1000);
 	digitalWrite(VIB_PIN, LOW);
 
 	String command = Serial.readStringUntil('\n');
@@ -113,16 +113,16 @@ void loop() {
 									digitalWrite(VIB_PIN, HIGH);
 									delay(1000);
 									digitalWrite(VIB_PIN, LOW);
-									delay(50);
+									delay(100);
 								}
 							} else {
 								// 500m-type milestone reached - vibrate
 								int halfKMNum = milestone / 3;
 								for (int i = 0; i <= halfKMNum; i++) {
 									digitalWrite(VIB_PIN, HIGH);
-									delay(200);
+									delay(500);
 									digitalWrite(VIB_PIN, LOW);
-									delay(50);
+									delay(100);
 								}
 							}
 						}
