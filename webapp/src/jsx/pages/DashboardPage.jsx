@@ -9,11 +9,19 @@ import {ImportDataModal} from "components/ImportDataModal.jsx";
 
 export class DashboardPage extends React.Component {
     constructor() {
-
+        this.state = {
+            runs: null
+        }
     }
 
-    getLastRun() {
-        return false;
+    componentDidMount() {
+        $.get("/api/all_runs", function(result) {
+            if (result.success != false) {
+                this.setState({
+                    runs: result
+                });
+            }
+        }.bind(this));
     }
 
     render() {
@@ -115,7 +123,7 @@ export class DashboardPage extends React.Component {
 
         var content = null;
 
-        if (!this.getLastRun()) {
+        if (!this.state.runs) {
             content = (
                 <div className="row alert alert-warning" role="alert">
                     <div className="col-xs-12">
@@ -137,7 +145,31 @@ export class DashboardPage extends React.Component {
                     {content}
                     <div className="row">
                         <div className="col-xs-6">
-                            <LineChart data={lineChartData} />
+                            <h2>Recent Runs</h2>
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {
+                                        this.state.runs ?
+                                            this.state.runs.map( function(run) {
+                                                return (
+                                                    <tr>
+                                                        <td>{window.app.moment(run.start_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.start_time * 1000).format(window.app.dayFormat)}</td>
+                                                        <td>{window.app.moment(run.end_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.end_time * 1000).format(window.app.dayFormat)}</td>
+                                                        <td><a href={"/run/" + run._id["$oid"]}>View</a></td>
+                                                    </tr>
+                                                );
+                                            }) : ""
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                         <div className="col-xs-6">
                             <PieChart data={pieChartData} />

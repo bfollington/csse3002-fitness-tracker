@@ -1,4 +1,14 @@
 export class ImportDataModal extends React.Component {
+
+    beginDataImport() {
+
+        $.post("/api/import_data", {}, function(result) {
+
+            console.log(result);
+
+        }.bind(this));
+    }
+
     render() {
         return (
             <div className="modal fade">
@@ -13,7 +23,7 @@ export class ImportDataModal extends React.Component {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary">Begin Import</button>
+                            <button type="button" className="btn btn-primary" onClick={this.beginDataImport.bind(this)}>Begin Import</button>
                         </div>
                     </div>
                 </div>

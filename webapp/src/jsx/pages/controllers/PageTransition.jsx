@@ -3,7 +3,7 @@ export function transition(ctx, next, component) {
         window.app.mountPoint.classList.add('transition');
         setTimeout(function(){
             window.app.mountPoint.classList.remove('transition');
-        }, 200);
+        }, 350);
     }
 
     React.render(component, window.app.mountPoint);
