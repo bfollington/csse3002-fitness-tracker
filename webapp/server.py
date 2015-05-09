@@ -183,20 +183,18 @@ class FTServer(SimpleHTTPRequestHandler):
             Import data from a connected run tracker. If no device is connected, then
             return an error.
             """
-
-            self.serial.refresh_list()
-            ports = self.serial.get_port_names()
-            run_tracker_port = None
-            resp = None
-
-            # TODO: Need to loop through the ports and try to find the Flora
-
-            # If we found the device, dump the data.
-            # TODO: store the data in the DB, rather than just returning it to the frontend
-            if run_tracker_port:
-                self.serial.connect(run_tracker_port)
-                run_data = self.serial.read_all_runs_raw()
+            
+            #TODO: get password from user
+            run_data = self.serial.get_runs("magicunicorn")
+            if run_data != None:
                 resp = dumps(run_data)
+                
+                waypoints = []
+                for point in run_data:
+                    waypoints.append(db.Waypoint(point[0], point[1], point[2]))
+                    
+                run = db.Run(waypoints)
+                self.db.push_run(run)
             else:
                 resp = dumps({"success": False, "error": "Device could not be reached."})
 
