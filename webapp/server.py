@@ -189,12 +189,21 @@ class FTServer(SimpleHTTPRequestHandler):
             if run_data != None:
                 resp = dumps(run_data)
                 
-                waypoints = []
-                for point in run_data:
-                    waypoints.append(db.Waypoint(point[0], point[1], point[2]))
+                for run in run_data:
+                    f = open(r"C:\Users\Declan\Desktop\datadump.txt", "w")
                     
-                run = db.Run(waypoints)
-                self.db.push_run(run)
+                    runStr = ""
+
+                    waypoints = []
+                    for point in run:
+                        waypoints.append(db.Waypoint(point[0], point[1], point[2]))
+                        runStr += str(point[1]) + "," + str(point[2]) + "\n"
+                    
+                    f.write(runStr)
+                    f.close()
+
+                    dbrun = db.Run(waypoints)
+                    self.db.push_run(dbrun)
             else:
                 resp = dumps({"success": False, "error": "Device could not be reached."})
 

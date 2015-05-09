@@ -4,21 +4,39 @@ from serial.tools import list_ports
 class SerialConnector():
     def __init__(self):
         self.serialConn = SerialIO()
-        #self.serialConn = TestSerialIO(r"C:\Users\Declan\Dropbox\Work\3rd Year\CSSE3002\Data\Maccas\rundata2.txt")
         self.processor = DataProcessor()
         
     '''
     Reads all the available run data from the Flora.
-    Returns the run data as a List of Tuples, with each Tuple consisting of (timestamp, lat, long)
+    Returns a list of runs, which consist of a list of tuples representing (timestamp, lat, long)
+    Each run is post processed with smoothing, etc. 
     '''
     def get_runs(self, password=None):
         if not self.serialConn.connect_flora(password):
             return None
         runDataStr = self.serialConn.read_all_runs()
-        return self.processor.process_runs(runDataStr)
+        #Split runs based on a threshold of 500 seconds
+        return self.processor.process_all_runs(runDataStr, 500)
 
 class DataProcessor():
-    def process_runs(self, runDataStr):
+    '''
+    Parses, processes and performs smoothing on a data dump from the Flora. 
+    Returns a list of runs, which consist of a list of tuples representing (timestamp, lat, long)
+    '''
+    def process_all_runs(self, runDataStr, threshold):
+        runData = self.parse_rundata(runDataStr)
+        runs = self.split_runs(runData, threshold)
+        
+        finalRuns = []
+        for run in runs:
+            finalRuns.append(self.smooth_run(run, 1))
+
+        return finalRuns
+
+    '''
+    Parses a string from the Flora and returns a list of tuples (timestamp, lat, lon)
+    '''
+    def parse_rundata(self, runDataStr):
         runDataArr = runDataStr.strip().split(",")[:-1]
 
         #Convert to list of tuples
@@ -26,18 +44,73 @@ class DataProcessor():
         
         for dataPoint in runDataArr:
             timeLocSplit = dataPoint.split("=")
-            #timestamp is in GPS time, convert to UTC by adding 17 seconds
-            timestamp = int(timeLocSplit[0]) + 16
+            timestamp = int(timeLocSplit[0])
             loc = timeLocSplit[1].split("|")
             lat = float(loc[0])
             lon = float(loc[1])
             
-            runData.append((timestamp, lat, lon))
+            if timestamp != 0 and lat != 0 and lon != 0:
+                runData.append((timestamp, lat, lon))
         
         return runData
 
+    '''
+    Splits a single list of waypoint tuples into multiple runs, based on the specified threshold time.
+    threshold is a duration in seconds in which a gap of threshold seconds between waypoints will determine
+    whether a new run has started or not.
 
-class TestSerialIO():
+    Returns a list of list of waypoint tuples, e.g.
+    [
+        [(1,2,3), (4,5,6)],
+        [(7,8,9), (10,11,12)]
+    ]
+    '''
+    def split_runs(self, runData, threshold):
+        runs = []
+        lastEnd = 0
+        for i in range(1, len(runData)):
+            lastPoint = runData[i - 1]
+            thisPoint = runData[i]
+
+            #If more than 500 seconds pass between two waypoints, assume it's a new run
+            if thisPoint[0] - lastPoint[0] > threshold:
+                runs.append(runData[lastEnd:i])
+                lastEnd = i + 1
+
+        runs.append(runData[lastEnd:-1])
+        return runs
+
+    def average_points(self, points, center):
+        totalLat = 0
+        totalLon = 0
+
+        for point in points:
+            totalLat += point[1]
+            totalLon += point[2]
+
+        avgLat = totalLat / len(points)
+        avgLon = totalLon / len(points)
+
+        return (points[center][0], avgLat, avgLon)
+
+    '''
+    Smooths a run's waypoints and returns the list of smoothed points
+    '''
+    def smooth_run(self, runData, sideLength):
+        smoothed = []
+
+        for i in range(0, sideLength):
+            smoothed.append(self.average_points(runData[0:i+sideLength], i))
+
+        for i in range(sideLength, len(runData) - sideLength - 1):
+            smoothed.append(self.average_points(runData[i - sideLength:i + sideLength], sideLength))
+
+        for i in range(len(runData) - sideLength - 1, len(runData) - 1):
+            smoothed.append(self.average_points(runData[i - sideLength:len(runData) - 1], sideLength))
+
+        return smoothed
+
+class FileSerialIO():
     def __init__(self, filepath):
         self.filepath = filepath
 
