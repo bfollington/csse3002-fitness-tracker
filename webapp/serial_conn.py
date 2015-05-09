@@ -46,12 +46,37 @@ class SerialConnector():
 		
 		reply = self.s.readline()
 		if not reply == "OK\n":
+			self.s.close()
 			print reply
 			return False
 			
 		self.connected = True
 		print "Connected successfully."
 		return True
+		
+	'''
+	Attempts to connect to an Adafruit Flora.
+	'''
+	def connect_flora(self, password=None):
+		self.refresh_list()
+		ports = self.get_port_names()
+		run_tracker_port = None
+		
+		for i in range(0, len(ports)):
+			port = ports[i]
+			if port.startswith("Adafruit Flora"):
+				run_tracker_port = i
+				break
+			
+		if (run_tracker_port == -1):
+			#Didn't find flora
+			return False
+			
+		if not self.connect(run_tracker_port, password):
+			return False
+			
+		return True
+			
 	'''
 	Reads all the available run data from the serial connection.
 	Returns the exact string reply the device sends to us, with no formatting or processing.
@@ -80,11 +105,14 @@ class SerialConnector():
 		runDataStr = self.s.readline().strip()
 		
 		runDataArr = runDataStr.split(",")[:-1]
+		
+		#Convert to list of tuples
 		runData = []
 		
 		for dataPoint in runDataArr:
 			timeLocSplit = dataPoint.split("=")
-			timestamp = timeLocSplit[0]
+			#timestamp is in GPS time, convert to UTC by adding 17 seconds
+			timestamp = int(timeLocSplit[0]) + 16
 			loc = timeLocSplit[1].split("|")
 			lat = float(loc[0])
 			lon = float(loc[1])
