@@ -27,11 +27,11 @@ class DataProcessor():
         runData = self.parse_rundata(runDataStr)
         runs = self.split_runs(runData, threshold)
         
-        finalRuns = []
-        for run in runs:
-            finalRuns.append(self.smooth_run(run, 1))
+        for i in range(0, len(runs)):
+            #5 point average = side length of 2
+            runs[i] = self.smooth_run(runs[i], 2)
 
-        return finalRuns
+        return runs
 
     '''
     Parses a string from the Flora and returns a list of tuples (timestamp, lat, lon)
@@ -80,6 +80,9 @@ class DataProcessor():
         runs.append(runData[lastEnd:-1])
         return runs
 
+    '''
+    Helper function to average multiple points.
+    '''
     def average_points(self, points, center):
         totalLat = 0
         totalLon = 0
@@ -91,10 +94,13 @@ class DataProcessor():
         avgLat = totalLat / len(points)
         avgLon = totalLon / len(points)
 
+        #Take timestamp from center point
         return (points[center][0], avgLat, avgLon)
 
     '''
     Smooths a run's waypoints and returns the list of smoothed points
+    sideLength refers to the number of points to take from either side for the average.
+    For example, to have a 5 point average the sideLength would be 2 -- an individual point is averaged with 2 on either side.
     '''
     def smooth_run(self, runData, sideLength):
         smoothed = []
