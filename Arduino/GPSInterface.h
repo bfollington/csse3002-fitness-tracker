@@ -9,6 +9,8 @@ class GPSInterface {
 public:
 	Adafruit_GPS GPS;
 
+public:
+
 	GPSInterface() : GPS(&Serial1) {}
 	~GPSInterface() {}
 
@@ -19,12 +21,47 @@ public:
 		Serial1.println(PMTK_Q_RELEASE);
 	}
 
+	//This _must_ be called as often as possible in order to use
+	//the getPosition functions.
+	void readSerial() {
+		char c;
+		do {
+			//We don't care about status/etc.
+			//If any of this fails, (ex: parse) there's nothing really
+			//we can do about it anyway. Just ignore it and the next update
+			//will clean things up.
+			char c = GPS.read();
+			//if (c) Serial.print(c);
+			if (GPS.newNMEAreceived()) {
+				GPS.parse(GPS.lastNMEA());
+			}
+		} while (c);
+	}
+
 	//Attempts to get the current position.
 	//Returns true if a position was determined, false otherwise.
 	bool getPosition(int32_t *lat, int32_t *lon) {
-		//FIXME: Until I can get a signal, I can't really write this.
-		//It's a thin wrapper around the helper functions found in the .cpp for this header.
-		return false;
+		//In production, the other code should be re-written to accept ints.
+		char latBuff[16], lonBuff[16];
+		dtostrf((double)GPS.latitude, 0, 4, latBuff);
+		dtostrf((double)GPS.longitude, 0, 4, lonBuff);
+
+		dmsToDegrees(latBuff, lonBuff, lat, lon);
+
+		return GPS.satellites > 0 && GPS.fix != 0;
+	}
+
+	bool getPosition(float *lat, float *lon) {
+		int32_t iLat, iLon;
+		bool ret = getPosition(&iLat, &iLon);
+
+		//Hemisphere correction.
+		if (GPS.lat == 'S') iLat = -iLat;
+		if (GPS.lon == 'E') iLon = -iLon;
+
+		*lat = iLat / 10000000.0f;
+		*lon = iLon / 10000000.0f;
+		return ret;
 	}
 
 	void eraseFlash() {
@@ -36,9 +73,7 @@ public:
 		//For debugging only, this will be backed off later.
 		GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
 
-		if (!GPS.LOCUS_StartLogger()) {
-			Serial.println("WARNING: NO RESPONSE RECEIVED TO STARTLOGGING REQUEST.");
-		}
+		GPS.sendCommand(PMTK_LOCUS_STARTLOG);
 	}
 
 	void stopLogging() {
