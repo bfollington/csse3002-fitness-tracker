@@ -31,7 +31,7 @@ class SerialConnector():
 	'''
 	Attempts to connect to the specified serial port index. The index must correspond to a value in current_ports.
 	'''
-	def connect(self, index):
+	def connect(self, index, password=None):
 		if (index < 0 or index >= len(self.current_ports)):
 			return False
 		self.s = serial.Serial(self.current_ports[index][0], self.baudrate, writeTimeout=1, timeout=1)
@@ -39,7 +39,11 @@ class SerialConnector():
 			return False
 		
 		#Connect
-		self.s.write("CONNECT\n")
+		if (password):
+			self.s.write("CONNECT " + password + "\n")
+		else:
+			self.s.write("CONNECT\n")
+		
 		reply = self.s.readline()
 		if not reply == "OK\n":
 			print reply
@@ -61,6 +65,32 @@ class SerialConnector():
 		runData = self.s.readline().strip()
 		
 		#Just return what we got from the Flora directly
+		return runData
+	
+	'''
+	Reads all the available run data from the serial connection.
+	Returns the run data as a List of Tuples, with each Tuple consisting of (timestamp, lat, long)
+	'''
+	def read_all_runs(self):
+		if not self.connected:
+			return None
+			
+		#Query for run data
+		self.s.write("RUNDATA\n")
+		runDataStr = self.s.readline().strip()
+		
+		runDataArr = runDataStr.split(",")[:-1]
+		runData = []
+		
+		for dataPoint in runDataArr:
+			timeLocSplit = dataPoint.split("=")
+			timestamp = timeLocSplit[0]
+			loc = timeLocSplit[1].split("|")
+			lat = float(loc[0])
+			lon = float(loc[1])
+			
+			runData.append((timestamp, lat, lon))
+		
 		return runData
 	
 	'''
