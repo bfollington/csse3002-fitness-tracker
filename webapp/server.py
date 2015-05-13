@@ -68,6 +68,9 @@ class FTServer(SimpleHTTPRequestHandler):
             if self.path.startswith("/api/all_runs"):
                 return self.api_all_runs_request()
 
+            if self.path.startswith("/api/delete_run"):
+                return self.api_delete_run_request()
+
             return self.get_routes[self.path]()
 
         return SimpleHTTPRequestHandler.do_GET(self)
@@ -79,6 +82,23 @@ class FTServer(SimpleHTTPRequestHandler):
 
         if run:
             self.wfile.write( dumps( run.to_dict() ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
+        self.wfile.close()
+
+    def api_delete_run_request(self):
+
+        run_id = self.path.replace("/api/delete_run/", "")
+        success = True
+
+        try:
+            self.db.delete_run(run_id)
+        except:
+            success = False
+
+
+        if success:
+            self.wfile.write( dumps( {"success": True, "message": "Run deleted."} ) )
         else:
             self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
         self.wfile.close()
