@@ -3,7 +3,15 @@ export class Map extends React.Component {
 
     }
 
+    getStaticUrl() {
+        var staticMapUrl = "https://maps.googleapis.com/maps/api/staticmap?" + this.defaultOptsString + "&" + this.centerString + "&" + this.zoomString + "&" + this.runPathString + "&" + this.markerString;
+
+        console.log(staticMapUrl);
+        return staticMapUrl;
+    }
+
     componentDidMount() {
+        // TODO: Refactor
 
         var runPath = [];
         var bounds = new google.maps.LatLngBounds();
@@ -20,6 +28,23 @@ export class Map extends React.Component {
 
         var map = new google.maps.Map($(React.findDOMNode(this)).find(".map-canvas")[0], mapOptions);
         map.fitBounds(bounds);
+
+        this.defaultOptsString = "size=600x300&maptype=roadmap";
+
+        google.maps.event.addListenerOnce(map, "zoom_changed", function() { this.zoomString = "zoom=" + map.zoom; }.bind(this));
+        google.maps.event.addListenerOnce(map, "center_changed", function() { this.centerString = "center=" + map.center.A + "," + map.center.F; }.bind(this));
+
+        this.runPathString = "path=color:0x0000ff|weight:5|";
+
+        for (var i = 0; i < runPath.length; i++) {
+            this.runPathString += runPath[i].A + "," + runPath[i].F;
+
+            if (i < runPath.length - 1) {
+                 this.runPathString += "|";
+            }
+        }
+
+        this.markerString = "markers=color:blue|" + runPath[0].A + "," + runPath[0].F + "|" + runPath[runPath.length - 1].A + "," + runPath[runPath.length - 1].F;
 
         for (var i = 0; i < this.props.waypoints.length - 1; i++) {
 
@@ -86,6 +111,7 @@ export class Map extends React.Component {
         return (
             <div>
                 <div className="map-canvas"></div>
+                <button onClick={this.getStaticUrl.bind(this)}>Test</button>
             </div>
         );
     }
