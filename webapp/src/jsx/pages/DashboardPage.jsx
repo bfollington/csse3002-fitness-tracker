@@ -17,8 +17,11 @@ export class DashboardPage extends React.Component {
     componentDidMount() {
         $.get("/api/all_runs", function(result) {
             if (result.success != false) {
+
+                var lastFiveRuns = result.slice(0, 5);
+
                 this.setState({
-                    runs: result
+                    runs: lastFiveRuns
                 });
             }
         }.bind(this));
