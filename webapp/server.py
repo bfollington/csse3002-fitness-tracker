@@ -190,18 +190,11 @@ class FTServer(SimpleHTTPRequestHandler):
                 resp = dumps(run_data)
                 
                 for run in run_data:
-                    f = open(r"C:\Users\Declan\Desktop\datadump.txt", "w")
-                    
-                    runStr = ""
 
                     waypoints = []
                     for point in run:
                         waypoints.append(db.Waypoint(point[0], point[1], point[2]))
-                        runStr += str(point[1]) + "," + str(point[2]) + "\n"
-                    
-                    f.write(runStr)
-                    f.close()
-
+					
                     dbrun = db.Run(waypoints)
                     self.db.push_run(dbrun)
             else:
