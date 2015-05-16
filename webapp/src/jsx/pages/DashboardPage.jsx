@@ -6,6 +6,7 @@ import {PieChart} from "components/PieChart.jsx";
 import {MainNavbar} from "components/MainNavbar.jsx";
 import {ModalTrigger} from "components/ModalTrigger.jsx";
 import {ImportDataModal} from "components/ImportDataModal.jsx";
+import {FacebookShareButton, TwitterShareButton} from "components/SocialSharing.jsx";
 
 export class DashboardPage extends React.Component {
     constructor() {
@@ -145,6 +146,7 @@ export class DashboardPage extends React.Component {
             <div>
                 <MainNavbar />
                 <div className="container">
+
                     {content}
                     <div className="row">
                         <div className="col-xs-6">
