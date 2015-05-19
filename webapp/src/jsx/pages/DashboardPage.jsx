@@ -6,6 +6,7 @@ import {PieChart} from "components/PieChart.jsx";
 import {MainNavbar} from "components/MainNavbar.jsx";
 import {ModalTrigger} from "components/ModalTrigger.jsx";
 import {ImportDataModal} from "components/ImportDataModal.jsx";
+import {FacebookShareButton, TwitterShareButton} from "components/SocialSharing.jsx";
 
 export class DashboardPage extends React.Component {
     constructor() {
@@ -17,8 +18,11 @@ export class DashboardPage extends React.Component {
     componentDidMount() {
         $.get("/api/all_runs", function(result) {
             if (result.success != false) {
+
+                var lastFiveRuns = result.slice(0, 5);
+
                 this.setState({
-                    runs: result
+                    runs: lastFiveRuns
                 });
             }
         }.bind(this));
@@ -142,6 +146,7 @@ export class DashboardPage extends React.Component {
             <div>
                 <MainNavbar />
                 <div className="container">
+
                     {content}
                     <div className="row">
                         <div className="col-xs-6">

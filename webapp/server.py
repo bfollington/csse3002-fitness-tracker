@@ -68,6 +68,9 @@ class FTServer(SimpleHTTPRequestHandler):
             if self.path.startswith("/api/all_runs"):
                 return self.api_all_runs_request()
 
+            if self.path.startswith("/api/delete_run"):
+                return self.api_delete_run_request()
+
             return self.get_routes[self.path]()
 
         return SimpleHTTPRequestHandler.do_GET(self)
@@ -79,6 +82,23 @@ class FTServer(SimpleHTTPRequestHandler):
 
         if run:
             self.wfile.write( dumps( run.to_dict() ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
+        self.wfile.close()
+
+    def api_delete_run_request(self):
+
+        run_id = self.path.replace("/api/delete_run/", "")
+        success = True
+
+        try:
+            self.db.delete_run(run_id)
+        except:
+            success = False
+
+
+        if success:
+            self.wfile.write( dumps( {"success": True, "message": "Run deleted."} ) )
         else:
             self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
         self.wfile.close()
@@ -183,20 +203,20 @@ class FTServer(SimpleHTTPRequestHandler):
             Import data from a connected run tracker. If no device is connected, then
             return an error.
             """
-
-            self.serial.refresh_list()
-            ports = self.serial.get_port_names()
-            run_tracker_port = None
-            resp = None
-
-            # TODO: Need to loop through the ports and try to find the Flora
-
-            # If we found the device, dump the data.
-            # TODO: store the data in the DB, rather than just returning it to the frontend
-            if run_tracker_port:
-                self.serial.connect(run_tracker_port)
-                run_data = self.serial.read_all_runs_raw()
+            
+            #TODO: get password from user
+            run_data = self.serial.get_runs("magicunicorn")
+            if run_data != None:
                 resp = dumps(run_data)
+                
+                for run in run_data:
+
+                    waypoints = []
+                    for point in run:
+                        waypoints.append(db.Waypoint(point[0], point[1], point[2]))
+					
+                    dbrun = db.Run(waypoints)
+                    self.db.push_run(dbrun)
             else:
                 resp = dumps({"success": False, "error": "Device could not be reached."})
 
