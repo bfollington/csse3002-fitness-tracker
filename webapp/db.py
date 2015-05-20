@@ -1,5 +1,6 @@
 import pymongo as mongo
 
+import serial_conn
 from bson.objectid import ObjectId
 
 class Waypoint:
@@ -111,22 +112,16 @@ class RunDatabase:
             return False
 
 
-def demo_insert( db ):
-    wps = []
-    wps.append( Waypoint( 1, 5, 2 ) )
-    wps.append( Waypoint( 2, 6, 3 ) )
-    wps.append( Waypoint( 3, 7, 4 ) )
-    run = Run( wps )
-
-    db.push_run( run )
-
-    wps = []
-    wps.append( Waypoint( 4, 5, 2 ) )
-    wps.append( Waypoint( 5, 6, 3 ) )
-    wps.append( Waypoint( 6, 7, 4 ) )
-    run = Run( wps )
-
-    db.push_run( run )
+def demo_insert( db, path ):
+    s = serial_conn.FileSerialConnector(path)
+    run_data = s.get_runs()
+    #run_data is a list of runs, each run is a list of waypoint tuples
+    
+    for run in run_data:
+        wps = []
+        for waypoint in run:
+            wps.append(Waypoint(*waypoint))
+        db.push_run(Run(wps))
 
 # Simple test which clears the database, then runs some simple tests
 if ( __name__ == "__main__" ):
@@ -137,7 +132,7 @@ if ( __name__ == "__main__" ):
     db.clear_runs()
 
     # Insert some dummy data
-    demo_insert( db )
+    demo_insert( db, "demo_insert.txt" )
 
     # Retrieve the latest run, and print it as a dict
     print "Testing get_latest_run"

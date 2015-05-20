@@ -1,6 +1,18 @@
 import serial
 from serial.tools import list_ports
 
+
+class FileSerialConnector():
+    def __init__(self, path):
+        self.serialConn = FileSerialIO(path)
+        self.processor = DataProcessor()
+
+    def get_runs(self):
+        runDataStr = self.serialConn.read_all_runs()
+        #Split runs based on a threshold of 500 seconds
+        runs = self.processor.process_all_runs(runDataStr, 500)
+        return runs
+
 class SerialConnector():
     def __init__(self):
         self.serialConn = SerialIO()
@@ -16,7 +28,9 @@ class SerialConnector():
             return None
         runDataStr = self.serialConn.read_all_runs()
         #Split runs based on a threshold of 500 seconds
-        return self.processor.process_all_runs(runDataStr, 500)
+        runs = self.processor.process_all_runs(runDataStr, 500)
+        self.serialConn.close()
+        return runs
 
 class DataProcessor():
     '''
@@ -119,9 +133,6 @@ class DataProcessor():
 class FileSerialIO():
     def __init__(self, filepath):
         self.filepath = filepath
-
-    def connect_flora(self, password):
-        return True
 
     def read_all_runs(self):
         str = ""
