@@ -52,9 +52,6 @@ void loop() {
 			}
 			connected = true;
 			Serial.print("OK\n");
-
-			// Vibrate to notify start of run
-			vibrateLong(2);
 		}
 	} else {
 		if (command == "RUNDATA") {
@@ -62,39 +59,20 @@ void loop() {
 			uint32_t timestamp;
 			gps.getData_Init();
 
-			Serial.println("Running...");
-
 			while (gps.getData_Next(&lat, &lon, &timestamp)) {
 				Serial.print(timestamp);
-				Serial.print(" = ");
+				Serial.print("=");
 				Serial.print(lat, 5);
-				Serial.print(" | ");
+				Serial.print("|");
 				Serial.println(lon, 5);
-
-				
+				Serial.print(",");
 			}
 
 			//Print our final newline.
 			Serial.println();
 		} else if (command == "CLEAR") {
-			Serial.println("Printing info");
-			
-			gps.GPS.LOCUS_ReadStatus();
-			Serial.println("Got.");
-			
-			Serial.print("Log is ");
-			Serial.print(gps.GPS.LOCUS_percent);
-			Serial.println("% full.");
-
-			Serial.print(gps.GPS.LOCUS_records);
-			Serial.print("|");
-			Serial.print(gps.GPS.LOCUS_config);
-			Serial.print("|");
-			Serial.print(gps.GPS.LOCUS_interval);
-			Serial.print("|");
-			Serial.print(gps.GPS.LOCUS_mode);
-			Serial.println();
-
+			Serial.print("OK\n");
+			gps.eraseFlash();
 		} else if (command == "CAPTURE") {
 			//This is a debug command, so that we can 'capture' live.
 			Serial.println("Starting data capture");
@@ -152,14 +130,14 @@ void check_distance(float lat, float lon) {
 	dtostrf(lat, 0, 5, latStr);
 	dtostrf(lon, 0, 5, lonStr);
 
-	Serial.print(lat, 5);
-	Serial.print(" | ");
-	Serial.println(lon, 5);
+	//Serial.print(lat, 5);
+	//Serial.print(" | ");
+	//Serial.println(lon, 5);
 
 	// Convert lat and lon into degrees
 	dmsToDegrees(&latStr[0], &lonStr[0], &latDeg, &lonDeg);
-	lat = ((float) latDeg) / 10000000;
-	lat = ((float) lonDeg) / 10000000;
+	lat = ((float)latDeg) / 10000000;
+	lat = ((float)lonDeg) / 10000000;
 
 	if (first_pos || sec_pos) {
 		// Initial coords obtained
@@ -177,7 +155,7 @@ void check_distance(float lat, float lon) {
 		float dist = sqrt(pow(delLat, 2) + pow(delLon, 2));
 		int intDist = (int) (dist * DIST_SCALE);
 		distance += intDist;
-		Serial.println("Distance travelled since last ping: " + String(intDist));
+		//Serial.println("Distance travelled since last ping: " + String(intDist));
 
 		// Check total distance travelled
 		if (distance > 500) {
@@ -195,8 +173,13 @@ void check_distance(float lat, float lon) {
 		prevLat = lat;
 		prevLon = lon;
 	}
+}
 
-
+void vibrateDelay(int ms) {
+	unsigned long stop = millis() + ms;
+	while (millis() < stop) {
+		gps.readSerial();
+	}
 }
 
 // Vibrates the device for 1 second for each time 
@@ -204,15 +187,15 @@ void check_distance(float lat, float lon) {
 void vibrateLong(int vibNum) {
 	for (int i = 0; i < vibNum; i++) {
 		digitalWrite(VIB_PIN, HIGH);
-		delay(1000);
+		vibrateDelay(1000);
 		digitalWrite(VIB_PIN, LOW);
-		delay(100);
+		vibrateDelay(100);
 	}
 }
 
 // Vibrates the device for 0.5 seconds.
 void vibrateShort() {
 	digitalWrite(VIB_PIN, HIGH);
-	delay(500);
+	vibrateDelay(500);
 	digitalWrite(VIB_PIN, LOW);
 }
