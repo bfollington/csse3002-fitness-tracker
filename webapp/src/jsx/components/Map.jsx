@@ -142,7 +142,6 @@ export class Map extends React.Component {
         return (
             <div>
                 <div className="map-canvas"></div>
-                <button onClick={this.getStaticUrl.bind(this)}>Test</button>
             </div>
         );
     }
