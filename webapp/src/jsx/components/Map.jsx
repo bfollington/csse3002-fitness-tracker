@@ -1,30 +1,63 @@
 export class Map extends React.Component {
     constructor() {
 
+        this.defaultOptsString = "size=600x300&maptype=roadmap";
     }
 
-    componentDidMount() {
+    getStaticUrl() {
+        var staticMapUrl = "https://maps.googleapis.com/maps/api/staticmap?" + this.defaultOptsString + "&" + this.centerString + "&" + this.zoomString + "&" + this.runPathString + "&" + this.markerString;
 
+        console.log(staticMapUrl);
+        return staticMapUrl;
+    }
+
+    computeRunPath(waypoints, bounds) {
         var runPath = [];
-        var bounds = new google.maps.LatLngBounds();
 
-        for (var i = 0; i < this.props.waypoints.length; i++) {
-            var point = new google.maps.LatLng(this.props.waypoints[i].lat, this.props.waypoints[i].lon);
+        for (var i = 0; i < waypoints.length; i++) {
+            var point = new google.maps.LatLng(waypoints[i].lat, waypoints[i].lon);
             runPath.push( point );
             bounds.extend( point );
         }
 
-        var mapOptions = {
-            mapTypeId: google.maps.MapTypeId.TERRAIN
-        };
+        return runPath;
+    }
 
-        var map = new google.maps.Map($(React.findDOMNode(this)).find(".map-canvas")[0], mapOptions);
-        map.fitBounds(bounds);
+    updateRunPathString(runPath) {
+        this.runPathString = "path=color:0x0000ff|weight:5|";
 
-        for (var i = 0; i < this.props.waypoints.length - 1; i++) {
+        for (var i = 0; i < runPath.length; i++) {
+            this.runPathString += runPath[i].A + "," + runPath[i].F;
 
-            var dx = parseFloat(this.props.waypoints[i].lat) - parseFloat(this.props.waypoints[i + 1].lat);
-            var dy = parseFloat(this.props.waypoints[i].lon) - parseFloat(this.props.waypoints[i + 1].lon);
+            if (i < runPath.length - 1) {
+                 this.runPathString += "|";
+            }
+        }
+    }
+
+    updateMarkerString(start, end) {
+        this.markerString = "markers=color:blue|" + start.A + "," + start.F + "|" + end.A + "," + end.F;
+    }
+
+    mapZoomHandler(map, e) {
+        this.zoomString = "zoom=" + map.zoom;
+    }
+
+    mapCenterHandler(map, e) {
+        this.centerString = "center=" + map.center.A + "," + map.center.F;
+    }
+
+    initStaticMapStrings() {
+        this.defaultOptsString = "size=600x300&maptype=roadmap";
+    }
+
+    createRunPathPolyline(map, waypoints, runPath) {
+        var runPathPolyLine;
+
+        for (var i = 0; i < waypoints.length - 1; i++) {
+
+            var dx = parseFloat(waypoints[i].lat) - parseFloat(waypoints[i + 1].lat);
+            var dy = parseFloat(waypoints[i].lon) - parseFloat(waypoints[i + 1].lon);
             var dist = Math.sqrt(dx * dx  + dy * dy) * 1000;
 
             var r, g, b;
@@ -32,7 +65,7 @@ export class Map extends React.Component {
             g = parseInt(255 * (1 - dist));
             b = 20;
 
-            var runPathPolyLine = new google.maps.Polyline({
+            runPathPolyLine = new google.maps.Polyline({
                 path: [runPath[i], runPath[i + 1]],
                 geodesic: true,
                 strokeColor: 'rgba(' + r + ', ' + g + ', ' + b + ', 1)',
@@ -42,10 +75,12 @@ export class Map extends React.Component {
 
             runPathPolyLine.setMap(map);
         }
+    }
 
+    placeMarkers(map, waypoints, runPath) {
         var startImage = '/img/start.png';
         var endImage = '/img/end.png';
-        var nodeImage = '/img/blank.png'; //'/img/node.png';
+        var nodeImage = '/img/blank.png';
         var icon;
 
         for (var i = 0; i < runPath.length; i++) {
@@ -79,13 +114,35 @@ export class Map extends React.Component {
                 });
             })(marker);
         }
+    }
 
+    componentDidMount() {
+        var bounds = new google.maps.LatLngBounds();
+        var runPath = this.computeRunPath(this.props.waypoints, bounds);
+
+        var mapOptions = {
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+
+        var map = new google.maps.Map($(React.findDOMNode(this)).find(".map-canvas")[0], mapOptions);
+        this.map = map;
+        map.fitBounds(bounds);
+
+        google.maps.event.addListenerOnce(map, "zoom_changed", this.mapZoomHandler.bind(this, map));
+        google.maps.event.addListenerOnce(map, "center_changed", this.mapCenterHandler.bind(this, map));
+
+        this.updateMarkerString(runPath[0], runPath[runPath.length - 1]);
+        this.updateRunPathString(runPath);
+
+        this.createRunPathPolyline(map, this.props.waypoints, runPath);
+        this.placeMarkers(map, this.props.waypoints, runPath);
     }
 
     render() {
         return (
             <div>
                 <div className="map-canvas"></div>
+                <button onClick={this.getStaticUrl.bind(this)}>Test</button>
             </div>
         );
     }
