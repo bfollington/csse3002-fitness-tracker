@@ -5,6 +5,7 @@ import cgi
 from bson.json_util import dumps
 import time
 from serial_conn import SerialConnector
+import time
 
 import db
 
@@ -203,22 +204,26 @@ class FTServer(SimpleHTTPRequestHandler):
             Import data from a connected run tracker. If no device is connected, then
             return an error.
             """
-            
+
+            password = False
+            if form.has_key( "password" ):
+                password = form["password"].value
+
             #TODO: get password from user
-            run_data = self.serial.get_runs("magicunicorn")
+            run_data = self.serial.get_runs(password)
             if run_data != None:
                 resp = dumps(run_data)
-                
+
                 for run in run_data:
 
                     waypoints = []
                     for point in run:
                         waypoints.append(db.Waypoint(point[0], point[1], point[2]))
-					
+
                     dbrun = db.Run(waypoints)
                     self.db.push_run(dbrun)
             else:
-                resp = dumps({"success": False, "error": "Device could not be reached."})
+                resp = dumps({"success": False, "error": "Could not connect to device, ensure your device is plugged in and that your password is correct."})
 
             self.wfile.write(resp)
             return
