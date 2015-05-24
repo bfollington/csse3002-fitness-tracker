@@ -1,6 +1,8 @@
 import pymongo as mongo
 
 import serial_conn
+import run_stats
+
 from bson.objectid import ObjectId
 
 class Waypoint:
@@ -12,7 +14,7 @@ class Waypoint:
     @staticmethod
     def from_mongo_obj( obj ):
         return Waypoint( obj[ u'time' ], obj[ u'lat' ], obj[ u'lon' ] )
-
+        
     def to_dict( self ):
         return {
             "time": self.time,
@@ -31,9 +33,16 @@ class Run:
         self.start_time = self.waypoints[ 0 ].time
         self.end_time = self.waypoints[ -1 ].time
 
+        stats = run_stats.calc_statistics( waypoints )
+        self.duration = stats['duration']
+        self.distance = stats['distance']
+        self.average_speed = stats['average_speed']
+        self.max_speed = stats['max_speed']
+        self.speed_graph = stats['speed_graph']
+        
         # Does not get an ID until it is pushed to the database
         self._id = ""
-
+        
     @staticmethod
     def from_mongo_obj( obj ):
         wps = []
@@ -49,7 +58,12 @@ class Run:
         return {
             "start_time": self.start_time,
             "end_time": self.end_time,
-            "waypoints": [ waypoint.to_dict() for waypoint in self.waypoints ]
+            "waypoints": [ waypoint.to_dict() for waypoint in self.waypoints ],
+            "duration": self.duration,
+            "distance": self.distance,
+            "average_speed": self.average_speed,
+            "max_speed": self.max_speed,
+            "speed_graph": self.speed_graph
         }
 
 
