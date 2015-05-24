@@ -6,6 +6,8 @@ from bson.json_util import dumps
 import time
 from serial_conn import SerialConnector
 import time
+import calendar
+from dateutil.parser import parse
 
 import db
 
@@ -60,8 +62,6 @@ class FTServer(SimpleHTTPRequestHandler):
         if self.path.startswith("/api"):
             self._set_headers("application/json")
 
-            if self.path.startswith("/api/run"):
-                return self.api_run_request()
 
             if self.path.startswith("/api/latest_run"):
                 return self.api_latest_run_request()
@@ -69,10 +69,16 @@ class FTServer(SimpleHTTPRequestHandler):
             if self.path.startswith("/api/all_runs"):
                 return self.api_all_runs_request()
 
+            if self.path.startswith("/api/runs_since_date"):
+                return self.api_get_runs_since_date_request()
+
+            if self.path.startswith("/api/run"):
+                return self.api_run_request()
+
             if self.path.startswith("/api/delete_run"):
                 return self.api_delete_run_request()
 
-            return self.get_routes[self.path]()
+            print "Path: {}".format(self.path)
 
         return SimpleHTTPRequestHandler.do_GET(self)
 
@@ -102,6 +108,25 @@ class FTServer(SimpleHTTPRequestHandler):
             self.wfile.write( dumps( {"success": True, "message": "Run deleted."} ) )
         else:
             self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
+        self.wfile.close()
+
+    def api_get_runs_since_date_request(self):
+
+        date = self.path.replace("/api/runs_since_date/", "")
+        print "Date: {}".format(calendar.timegm(time.strptime(date, '%Y-%m-%d')))
+        success = True
+
+        try:
+            runs = self.db.get_runs_since_date(calendar.timegm(time.strptime(date, '%Y-%m-%d')))
+            print "Runs: {}".format(runs)
+        except:
+            success = False
+
+
+        if success:
+            self.wfile.write( dumps( {"success": True, "runs": [run.to_dict() for run in runs]} ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "No runs in date range."} ) )
         self.wfile.close()
 
     def api_latest_run_request(self):

@@ -14,7 +14,7 @@ class Waypoint:
     @staticmethod
     def from_mongo_obj( obj ):
         return Waypoint( obj[ u'time' ], obj[ u'lat' ], obj[ u'lon' ] )
-        
+
     def to_dict( self ):
         return {
             "time": self.time,
@@ -39,10 +39,10 @@ class Run:
         self.average_speed = stats['average_speed']
         self.max_speed = stats['max_speed']
         self.speed_graph = stats['speed_graph']
-        
+
         # Does not get an ID until it is pushed to the database
         self._id = ""
-        
+
     @staticmethod
     def from_mongo_obj( obj ):
         wps = []
@@ -84,6 +84,14 @@ class RunDatabase:
         run.id = self.db.runs.insert_one( run.to_dict() ).inserted_id
         return run.id
 
+    def get_runs_since_date( self, d ):
+        try:
+            runs = self.db.runs.find({"start_time": {"$gt": d}}).sort("start_time")
+            return [ Run.from_mongo_obj( run ) for run in runs ]
+
+        except:
+            print("No runs to return.")
+            return False
 
     def get_latest_run( self ):
 
@@ -92,7 +100,7 @@ class RunDatabase:
             return Run.from_mongo_obj( run )
 
         except:
-            print("Run not found.")
+            print("Latest run not found.")
             return False
 
 
@@ -115,7 +123,7 @@ class RunDatabase:
             return [ Waypoint.from_mongo_obj( wp ) for wp in wps ]
 
         except:
-            print("Run not found.")
+            print("Run not found, cannot return waypoints.")
             return False
 
     def get_run_with_waypoints( self, id ):
@@ -125,7 +133,7 @@ class RunDatabase:
             return Run.from_mongo_obj( run )
 
         except:
-            print("Run not found.")
+            print("Full run not found.")
             return False
 
 
@@ -133,7 +141,7 @@ def demo_insert( db, path ):
     s = serial_conn.FileSerialConnector(path)
     run_data = s.get_runs()
     #run_data is a list of runs, each run is a list of waypoint tuples
-    
+
     for run in run_data:
         wps = []
         for waypoint in run:
@@ -149,6 +157,7 @@ if ( __name__ == "__main__" ):
     db.clear_runs()
 
     # Insert some dummy data
+    demo_insert( db, "demo_insert.txt" )
     demo_insert( db, "demo_insert.txt" )
 
     # Retrieve the latest run, and print it as a dict
