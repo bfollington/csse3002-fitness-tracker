@@ -122,9 +122,14 @@ class FTServer(SimpleHTTPRequestHandler):
         except:
             success = False
 
+        final_runs = []
+        for run in runs:
+            dict = run.to_dict()
+            dict["_id"] = run._id
+            final_runs.append(dict)
 
         if success:
-            self.wfile.write( dumps( {"success": True, "runs": [run.to_dict() for run in runs]} ) )
+            self.wfile.write( dumps( {"success": True, "runs": final_runs} ) )
         else:
             self.wfile.write( dumps( {"success": False, "message": "No runs in date range."} ) )
         self.wfile.close()

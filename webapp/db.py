@@ -158,7 +158,7 @@ if ( __name__ == "__main__" ):
 
     # Insert some dummy data
     demo_insert( db, "demo_insert.txt" )
-    demo_insert( db, "demo_insert.txt" )
+    demo_insert( db, "second_insert.txt" )
 
     # Retrieve the latest run, and print it as a dict
     print "Testing get_latest_run"
