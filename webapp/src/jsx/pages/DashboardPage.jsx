@@ -28,7 +28,11 @@ export class DashboardPage extends React.Component {
                         }
                     ]
                 },
-                opts: {}
+                opts: {
+                    scaleLabel: function( val ) {
+                        return val.value + " km/h"
+                    }
+                }
             },
             distanceGraph: {
                 data: {
@@ -46,7 +50,11 @@ export class DashboardPage extends React.Component {
                         }
                     ]
                 },
-                opts: {}
+                opts: {
+                    scaleLabel: function( val ) {
+                        return val.value + " m"
+                    }
+                }
             }
         }
     }
@@ -72,12 +80,42 @@ export class DashboardPage extends React.Component {
                 speedGraph.data.datasets[0].data = [];
                 distanceGraph.data.labels = [];
                 distanceGraph.data.datasets[0].data = [];
-                for (var i = 0; i < result.runs.length; i++) {
-                    speedGraph.data.labels.push("");
-                    speedGraph.data.datasets[0].data.push(result.runs[i].average_speed * 60 * 60 / 1000);
 
-                    distanceGraph.data.labels.push("");
-                    distanceGraph.data.datasets[0].data.push(result.runs[i].distance);
+                let counts = [0,0,0,0,0,0,0];
+                let speeds = [0,0,0,0,0,0,0];
+                let distances = [0,0,0,0,0,0,0];
+
+                let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+                for (var i = 0; i < result.runs.length; i++) {
+                    let run = result.runs[i];
+                    let moment = window.app.moment( run.start_time * 1000 );
+                    let day = moment.weekday();
+
+                    counts[day]++;
+                    speeds[day] += run.average_speed;
+                    distances[day] += run.distance;
+                }
+
+
+                for (var i = 0; i < 7; i++) {
+
+                    let run = result.runs[i];
+                    speedGraph.data.labels.push(weekdays[i]);
+                    let speed = 0;
+                    if ( counts[i] > 0 ) {
+                        speed = (speeds[i] / counts[i]) * 60 * 60 / 1000;
+                    }
+                    speed = speed.toFixed(2);
+                    speedGraph.data.datasets[0].data.push(speed);
+
+                    distanceGraph.data.labels.push(weekdays[i]);
+                    let distance = 0;
+                    if ( counts[i] > 0 ) {
+                        distance = distances[i];
+                    }
+                    distance = distance.toFixed(2);
+                    distanceGraph.data.datasets[0].data.push(distance);
                 }
 
                 this.setState({
