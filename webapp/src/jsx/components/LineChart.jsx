@@ -22,8 +22,13 @@ export class LineChart extends React.Component {
     render() {
         return (
             <div>
-                <canvas className="chart" width="400" height="200"></canvas>
+                <canvas className="chart center-chart" width={this.props.width} height={this.props.height}></canvas>
             </div>
         );
     }
+}
+
+LineChart.defaultProps = {
+    width: 360,
+    height: 180
 }

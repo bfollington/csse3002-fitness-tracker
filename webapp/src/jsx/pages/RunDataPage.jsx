@@ -14,12 +14,12 @@ export class RunDataPage extends React.Component {
                 datasets: [
                     {
                         label: "My First dataset",
-                        fillColor: "rgba(220,220,220,0.2)",
-                        strokeColor: "rgba(220,220,220,1)",
-                        pointColor: "rgba(220,220,220,1)",
+                        fillColor: "rgba(151,187,205,0.2)",
+                        strokeColor: "rgba(151,187,205,1)",
+                        pointColor: "rgba(151,187,205,1)",
                         pointStrokeColor: "#fff",
                         pointHighlightFill: "#fff",
-                        pointHighlightStroke: "rgba(220,220,220,1)",
+                        pointHighlightStroke: "rgba(151,187,205,1)",
                         data: [65, 59, 80, 81, 56, 55, 40]
                     }
                 ]
@@ -29,7 +29,10 @@ export class RunDataPage extends React.Component {
                 datasetFill : true,
                 scaleShowHorizontalLines: true,
                 scaleShowVerticalLines: true,
-                showTooltips: false
+                showTooltips: false,
+                scaleLabel: function(value) {
+                    return value.value + " km/hr"
+                }
             }
         };
     }
@@ -105,26 +108,27 @@ export class RunDataPage extends React.Component {
                 <div className="container">
                     <div className="row">
                         <h1 className="full-width">
-                            Your Run on {window.app.moment(this.state.run.start_time * 1000).format(window.app.dayFormat)}
+                            Your Run <small>{window.app.moment(this.state.run.start_time * 1000).format(window.app.dayFormat)}</small>
                             <button className="btn btn-default float-right" onClick={this.shareRun.bind(this)}>Share Run</button>
                         </h1>
-                        <Map ref="map" waypoints={this.state.run.waypoints} />
-                        {modal}
-
                     </div>
-                    <div className="row">
-                        <div className="col-md-4 center-text"><strong>Total Distance:</strong> {this.state.run.distance.toFixed(2)}m</div>
-                        <div className="col-md-4 center-text"><strong>Average Speed:</strong> {(this.state.run.average_speed * 60 * 60 / 1000).toFixed(2)}kmph</div>
-                        <div className="col-md-4 center-text"><strong>Duration:</strong> { parseInt(this.state.run.duration / 60) } mins {this.state.run.duration % 60} seconds</div>
+                    <div className="row margin-top">
+                        <div className="col-md-4 center-text"><h3>Total Distance</h3> {this.state.run.distance.toFixed(2)}m</div>
+                        <div className="col-md-4 center-text"><h3>Average Speed</h3> {(this.state.run.average_speed * 60 * 60 / 1000).toFixed(2)}kmph</div>
+                        <div className="col-md-4 center-text"><h3>Duration</h3> { parseInt(this.state.run.duration / 60) } mins {this.state.run.duration % 60} seconds</div>
                     </div>
                     <hr />
                     <div className="row">
-                        <div className="col-xs-4"></div>
-                        <div className="col-xs-4 center-text">
-                            <span>Your Run Breakdown</span>
-                            <LineChart data={this.state.chartData} opts={this.state.chartOpts} />
+                        <Map ref="map" waypoints={this.state.run.waypoints} />
+                        {modal}
+                    </div>
+
+                    <hr />
+                    <div className="row">
+                        <div className="col-xs-12 center-text">
+                            <h3>Your Speed Breakdown</h3>
+                            <LineChart data={this.state.chartData} opts={this.state.chartOpts} width={1140} height={240} />
                         </div>
-                        <div className="col-xs-4"></div>
                     </div>
                 </div>
             );
