@@ -33,6 +33,9 @@ body {
     height: 480px;
     margin: 0;
     padding: 0;
+
+    border: 1px solid $color-theme-200;
+    border-radius: 3px;
 }
 
 .navbar {
@@ -69,11 +72,6 @@ body {
     }
 }
 
-
-
-
-
-
 .fb-share-button span,
 .fb-share-button iframe {
     width: 55px! important;
@@ -97,4 +95,9 @@ body {
 
 .full-width {
     width: 100%;
+}
+
+.center-chart {
+    display: block;
+    margin: 0 auto;
 }
