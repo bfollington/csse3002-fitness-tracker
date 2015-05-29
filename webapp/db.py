@@ -79,6 +79,9 @@ class RunDatabase:
     def clear_runs( self ):
         self.db.runs.remove()
 
+    def delete_run( self, id ):
+        self.db.runs.remove({"_id": ObjectId( id )})
+
     def push_run( self, run ):
         run.id = self.db.runs.insert_one( run.to_dict() ).inserted_id
         return run.id

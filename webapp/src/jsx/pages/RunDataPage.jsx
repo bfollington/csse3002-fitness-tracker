@@ -1,8 +1,6 @@
 import {Body} from "components/Body.jsx";
-import {LineChart} from "components/LineChart.jsx";
-import {BarChart} from "components/BarChart.jsx";
-import {RadarChart} from "components/RadarChart.jsx";
-import {PieChart} from "components/PieChart.jsx";
+import {ModalTrigger} from "components/ModalTrigger.jsx";
+import {ShareRunModal} from "components/ShareRunModal.jsx";
 import {MainNavbar} from "components/MainNavbar.jsx";
 import {Map} from "components/Map.jsx";
 
@@ -25,6 +23,29 @@ export class RunDataPage extends React.Component {
         }.bind(this));
     }
 
+    shareRun(e) {
+        var mapUrl = this.refs.map.getStaticUrl();
+        var callback = this.imgurUpload.bind(this);
+
+        $.ajax({
+            type: "POST",
+            url: "https://api.imgur.com/3/image",
+            headers: {
+                'Authorization': 'Client-ID d8f59039bdb9fad'
+            },
+            data: {
+                image: mapUrl
+            },
+            success: callback
+
+        });
+    }
+
+    imgurUpload(data) {
+        console.log(data);
+        this.setState({mapUrl: data["data"]["link"], sharingRun: true});
+    }
+
     render() {
 
         var body = (
@@ -35,12 +56,19 @@ export class RunDataPage extends React.Component {
             </div>
         );
 
+        var modal = <ShareRunModal ref="modal" imageUrl={this.state.mapUrl} />;
+        if (!this.state.sharingRun) {
+            modal = null;
+        }
+
         if (this.state.run) {
             body = (
                 <div className="container">
                     <div className="row">
                         <h1>Your Run on {window.app.moment(this.state.run.start_time * 1000).format(window.app.dayFormat)}</h1>
-                        <Map waypoints={this.state.run.waypoints} />
+                        <Map ref="map" waypoints={this.state.run.waypoints} />
+                        {modal}
+                        <button onClick={this.shareRun.bind(this)}>Share Run</button>
                     </div>
                 </div>
             );

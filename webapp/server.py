@@ -5,6 +5,7 @@ import cgi
 from bson.json_util import dumps
 import time
 from serial_conn import SerialConnector
+import time
 
 import db
 
@@ -68,6 +69,9 @@ class FTServer(SimpleHTTPRequestHandler):
             if self.path.startswith("/api/all_runs"):
                 return self.api_all_runs_request()
 
+            if self.path.startswith("/api/delete_run"):
+                return self.api_delete_run_request()
+
             return self.get_routes[self.path]()
 
         return SimpleHTTPRequestHandler.do_GET(self)
@@ -79,6 +83,23 @@ class FTServer(SimpleHTTPRequestHandler):
 
         if run:
             self.wfile.write( dumps( run.to_dict() ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
+        self.wfile.close()
+
+    def api_delete_run_request(self):
+
+        run_id = self.path.replace("/api/delete_run/", "")
+        success = True
+
+        try:
+            self.db.delete_run(run_id)
+        except:
+            success = False
+
+
+        if success:
+            self.wfile.write( dumps( {"success": True, "message": "Run deleted."} ) )
         else:
             self.wfile.write( dumps( {"success": False, "message": "Id did not match a run."} ) )
         self.wfile.close()
@@ -183,22 +204,26 @@ class FTServer(SimpleHTTPRequestHandler):
             Import data from a connected run tracker. If no device is connected, then
             return an error.
             """
-            
+
+            password = False
+            if form.has_key( "password" ):
+                password = form["password"].value
+
             #TODO: get password from user
-            run_data = self.serial.get_runs("magicunicorn")
+            run_data = self.serial.get_runs(password)
             if run_data != None:
                 resp = dumps(run_data)
-                
+
                 for run in run_data:
 
                     waypoints = []
                     for point in run:
                         waypoints.append(db.Waypoint(point[0], point[1], point[2]))
-					
+
                     dbrun = db.Run(waypoints)
                     self.db.push_run(dbrun)
             else:
-                resp = dumps({"success": False, "error": "Device could not be reached."})
+                resp = dumps({"success": False, "error": "Could not connect to device, ensure your device is plugged in and that your password is correct."})
 
             self.wfile.write(resp)
             return
