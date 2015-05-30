@@ -33,14 +33,6 @@ class Run:
         self.start_time = self.waypoints[ 0 ].time
         self.end_time = self.waypoints[ -1 ].time
 
-        stats = run_stats.calc_statistics( waypoints )
-        self.duration = stats['duration']
-        self.distance = stats['distance']
-        self.average_speed = stats['average_speed']
-        self.max_speed = stats['max_speed']
-        self.speed_graph = stats['speed_graph']
-        self.kilojoules = stats['kilojoules']
-
         # Does not get an ID until it is pushed to the database
         self._id = ""
 
@@ -51,9 +43,25 @@ class Run:
             wps.append( Waypoint.from_mongo_obj( wp ) )
 
         run = Run( wps )
+
+        run.duration = obj[u'duration']
+        run.distance = obj[u'distance']
+        run.average_speed = obj[u'average_speed']
+        run.max_speed = obj[u'max_speed']
+        run.speed_graph = obj[u'speed_graph']
+        run.kilojoules = obj[u'kilojoules']
+
         run._id = str( obj[ u'_id' ] )
 
         return run
+
+    def set_statistics( self, stats):
+        self.duration = stats['duration']
+        self.distance = stats['distance']
+        self.average_speed = stats['average_speed']
+        self.max_speed = stats['max_speed']
+        self.speed_graph = stats['speed_graph']
+        self.kilojoules = stats['kilojoules']
 
     def to_dict( self ):
         return {
@@ -64,10 +72,9 @@ class Run:
             "distance": self.distance,
             "average_speed": self.average_speed,
             "max_speed": self.max_speed,
-            "speed_graph": self.speed_graph
+            "speed_graph": self.speed_graph,
+            "kilojoules": self.kilojoules
         }
-
-
 
 class RunDatabase:
     def __init__( self ):
@@ -128,8 +135,9 @@ class RunDatabase:
             run = self.db.runs.find_one( sort = [ ( "end_time", -1 ) ] )
             return Run.from_mongo_obj( run )
 
-        except:
+        except Exception as e:
             print("Latest run not found.")
+            print e
             return False
 
     def get_run_list( self ):
@@ -170,12 +178,22 @@ def demo_insert( db, path ):
     s = serial_conn.FileSerialConnector(path)
     run_data = s.get_runs()
     #run_data is a list of runs, each run is a list of waypoint tuples
-
+    
+    user_settings = db.get_settings()
+    height = user_settings['height']
+    weight = user_settings['weight']
+    age = user_settings['age']
+    gender = user_settings['gender']
+    
     for run in run_data:
         wps = []
         for waypoint in run:
             wps.append(Waypoint(*waypoint))
-        db.push_run(Run(wps))
+        run = Run(wps)
+        
+        stats = run_stats.calc_statistics(wps, height, weight, age, gender)
+        run.set_statistics(stats)
+        db.push_run(run)
 
 # Simple test which clears the database, then runs some simple tests
 if ( __name__ == "__main__" ):
