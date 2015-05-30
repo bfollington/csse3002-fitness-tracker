@@ -35,7 +35,7 @@ export class RunDataPage extends React.Component {
                     return value.value + " km/hr"
                 },
                 tooltipTemplate: function(value) {
-                    return ( parseInt(value.value) + " km/hr" )
+                    return ( (value.value).toFixed( 1 ) + " km/hr" )
                 }
             }
         };
