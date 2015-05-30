@@ -95,6 +95,7 @@ class RunDatabase:
             }
             self.db.settings.remove()
             self.db.settings.insert_one( to_persist )
+            return True
         except:
             print("Invalid settings")
             return False

@@ -11,7 +11,6 @@ from dateutil.parser import parse
 
 import db
 
-
 class FTServer(SimpleHTTPRequestHandler):
 
     """
@@ -77,6 +76,9 @@ class FTServer(SimpleHTTPRequestHandler):
 
             if self.path.startswith("/api/delete_run"):
                 return self.api_delete_run_request()
+
+            if self.path.startswith("/api/settings"):
+                return self.api_settings_request()
 
             print "Path: {}".format(self.path)
 
@@ -151,6 +153,17 @@ class FTServer(SimpleHTTPRequestHandler):
 
         if runs:
             self.wfile.write( dumps( runs ) )
+        else:
+            self.wfile.write( dumps( {"success": False, "message": "Could not retrieve runs."} ) )
+
+        self.wfile.close()
+
+    def api_settings_request(self):
+
+        settings = self.db.get_settings()
+
+        if settings:
+            self.wfile.write( dumps( settings ) )
         else:
             self.wfile.write( dumps( {"success": False, "message": "Could not retrieve runs."} ) )
 
@@ -254,6 +267,21 @@ class FTServer(SimpleHTTPRequestHandler):
                     self.db.push_run(dbrun)
             else:
                 resp = dumps({"success": False, "error": "Could not connect to device, ensure your device is plugged in and that your password is correct."})
+
+            self.wfile.write(resp)
+            return
+
+        if (self.path == "/api/update_settings"):
+
+            new_settings = {}
+            for setting in ["gender", "height", "weight", "age"]:
+                if form.has_key(setting):
+                    new_settings[setting] = form[setting].value
+
+            if self.db.set_settings(new_settings) is True:
+                resp = dumps({"success": True})
+            else:
+                resp = dumps({"success": False, "error": "Could not update the configuration settings."})
 
             self.wfile.write(resp)
             return
