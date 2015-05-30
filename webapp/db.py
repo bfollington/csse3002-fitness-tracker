@@ -39,6 +39,7 @@ class Run:
         self.average_speed = stats['average_speed']
         self.max_speed = stats['max_speed']
         self.speed_graph = stats['speed_graph']
+        self.kilojoules = stats['kilojoules']
         
         # Does not get an ID until it is pushed to the database
         self._id = ""
@@ -63,7 +64,8 @@ class Run:
             "distance": self.distance,
             "average_speed": self.average_speed,
             "max_speed": self.max_speed,
-            "speed_graph": self.speed_graph
+            "speed_graph": self.speed_graph,
+            "kilojoules": self.kilojoules
         }
 
 
