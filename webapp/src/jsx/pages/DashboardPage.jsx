@@ -218,7 +218,6 @@ export class DashboardPage extends React.Component {
             <div>
                 <MainNavbar />
                 <div className="container">
-
                     {content}
                     <div className="row">
                         <div className="col-xs-12">
