@@ -37,7 +37,7 @@ export class Navbar extends React.Component {
 
                         <ul className="nav navbar-nav navbar-right">
                             <li>
-                                <ModalTrigger modal={<AppSettingsModal />} className="btn btn-default" buttonText="Settings" />
+                                <ModalTrigger modal={<AppSettingsModal />} button={false} className="settings-icon" buttonText={<i className="ion ion-gear-a"></i>} />
                             </li>
                         </ul>
                     </div>

@@ -207,7 +207,7 @@ export class DashboardPage extends React.Component {
                             You haven't added any run data this week, when you import a new run you'll be able to see information about your fitness here.
                         </p>
                         <div className="center-text">
-                            <ModalTrigger modal={<ImportDataModal />} className="btn btn-default navbar-btn margin-left margin-right" buttonText="Import Data" />
+                            <ModalTrigger modal={<ImportDataModal />} button={true} className="btn btn-default navbar-btn margin-left margin-right" buttonText="Import Data" />
                         </div>
                     </div>
                 </div>
