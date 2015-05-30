@@ -59,11 +59,19 @@ export class Map extends React.Component {
             var dx = parseFloat(waypoints[i].lat) - parseFloat(waypoints[i + 1].lat);
             var dy = parseFloat(waypoints[i].lon) - parseFloat(waypoints[i + 1].lon);
             var dist = Math.sqrt(dx * dx  + dy * dy) * 1000;
-
+            dist *= 500;
+            if ( dist > 230 ) {
+                dist = 230;
+            }
+            if ( dist < 20 ) {
+                dist = 20;
+            }
+            console.log( dist );
             var r, g, b;
-            r = parseInt(255 * dist);
-            g = parseInt(255 * (1 - dist));
+            r = parseInt((255 - dist));
+            g = parseInt((dist));
             b = 20;
+            console.log( r, g, b );
 
             runPathPolyLine = new google.maps.Polyline({
                 path: [runPath[i], runPath[i + 1]],

@@ -39,6 +39,7 @@ class Run:
         self.average_speed = stats['average_speed']
         self.max_speed = stats['max_speed']
         self.speed_graph = stats['speed_graph']
+        self.kilojoules = stats['kilojoules']
 
         # Does not get an ID until it is pushed to the database
         self._id = ""
@@ -110,6 +111,14 @@ class RunDatabase:
             return to_return
         except:
             print("Settings not found.")
+
+    def get_runs_since_date( self, d ):
+        try:
+            runs = self.db.runs.find({"start_time": {"$gt": d}}).sort("start_time")
+            return [ Run.from_mongo_obj( run ) for run in runs ]
+
+        except:
+            print("No runs to return.")
             return False
 
     def get_latest_run( self ):
@@ -119,7 +128,7 @@ class RunDatabase:
             return Run.from_mongo_obj( run )
 
         except:
-            print("Run not found.")
+            print("Latest run not found.")
             return False
 
     def get_run_list( self ):
@@ -141,7 +150,7 @@ class RunDatabase:
             return [ Waypoint.from_mongo_obj( wp ) for wp in wps ]
 
         except:
-            print("Run not found.")
+            print("Run not found, cannot return waypoints.")
             return False
 
     def get_run_with_waypoints( self, id ):
@@ -151,7 +160,7 @@ class RunDatabase:
             return Run.from_mongo_obj( run )
 
         except:
-            print("Run not found.")
+            print("Full run not found.")
             return False
 
 
@@ -187,6 +196,7 @@ if ( __name__ == "__main__" ):
 
     # Insert some dummy data
     demo_insert( db, "demo_insert.txt" )
+    demo_insert( db, "second_insert.txt" )
 
     # Retrieve the latest run, and print it as a dict
     print "Testing get_latest_run"
