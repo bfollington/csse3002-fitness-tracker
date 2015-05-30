@@ -7,6 +7,7 @@ import {MainNavbar} from "components/MainNavbar.jsx";
 import {ModalTrigger} from "components/ModalTrigger.jsx";
 import {ImportDataModal} from "components/ImportDataModal.jsx";
 import {FacebookShareButton, TwitterShareButton} from "components/SocialSharing.jsx";
+import {UploadDataButton} from "components/UploadDataButton.jsx";
 
 export class DashboardPage extends React.Component {
     constructor() {
@@ -207,7 +208,7 @@ export class DashboardPage extends React.Component {
                             You haven't added any run data this week, when you import a new run you'll be able to see information about your fitness here.
                         </p>
                         <div className="center-text">
-                            <ModalTrigger modal={<ImportDataModal />} button={true} className="btn btn-default navbar-btn margin-left margin-right" buttonText="Import Data" />
+                            <ModalTrigger modal={<ImportDataModal />} button={true} className="btn btn-default navbar-btn margin-left margin-right" buttonText={<UploadDataButton />} />
                         </div>
                     </div>
                 </div>
