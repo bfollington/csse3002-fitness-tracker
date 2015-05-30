@@ -79,7 +79,7 @@ class FTServer(SimpleHTTPRequestHandler):
 
             if self.path.startswith("/api/settings"):
                 return self.api_settings_request()
-
+            
             print "Path: {}".format(self.path)
 
         return SimpleHTTPRequestHandler.do_GET(self)
@@ -252,11 +252,15 @@ class FTServer(SimpleHTTPRequestHandler):
             if form.has_key( "password" ):
                 password = form["password"].value
 
-            #TODO: get password from user
             run_data = self.serial.get_runs(password)
             if run_data != None:
                 resp = dumps(run_data)
-
+                user_settings = self.db.get_settings()
+                height = user_settings['height']
+                weight = user_settings['weight']
+                age = user_settings['age']
+                gender = user_settings['gender']
+                
                 for run in run_data:
 
                     waypoints = []
@@ -264,6 +268,8 @@ class FTServer(SimpleHTTPRequestHandler):
                         waypoints.append(db.Waypoint(point[0], point[1], point[2]))
 
                     dbrun = db.Run(waypoints)
+                    stats = run_stats.calc_statistics(waypoints, height, weight, age, gender)
+                    dbrun.set_statistics(stats)
                     self.db.push_run(dbrun)
             else:
                 resp = dumps({"success": False, "error": "Could not connect to device, ensure your device is plugged in and that your password is correct."})
