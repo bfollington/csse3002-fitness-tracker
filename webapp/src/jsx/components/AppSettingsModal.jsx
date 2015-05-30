@@ -7,16 +7,28 @@ export class AppSettingsModal extends React.Component {
             saveSettingsInProgress: false,
             weight: 0,
             height: 0,
-            gender: true,
-            age: 0,
+            gender: "other",
+            age: 0
         };
     }
 
     componentDidMount() {
-        $.get("/api/get_settings", function(result) {
+
+        $(React.findDOMNode(this)).on("shown.bs.modal", this.shown.bind(this));
+    }
+
+    shown(e) {
+        $.get("/api/settings", function(result) {
 
             if (result.success != false) {
                 console.log(result);
+
+                this.setState({
+                    gender: result.gender,
+                    weight: result.weight,
+                    height: result.height,
+                    age: result.age
+                });
             }
 
         }.bind(this));
@@ -33,10 +45,12 @@ export class AppSettingsModal extends React.Component {
             gender: this.state.gender
         };
 
-        $.post("/api/save_settings", params, function(result) {
+        $.post("/api/update_settings", params, function(result) {
             console.log(result);
 
             this.setState({saveSettingsInProgress: false});
+
+            $(React.findDOMNode(this)).modal("hide");
 
         }.bind(this));
     }
@@ -91,23 +105,10 @@ export class AppSettingsModal extends React.Component {
             this.getForm()
         ];
 
-        var failedImportBody = [
-            <div className="alert alert-danger" role="alert"><strong>Import failed</strong>: {this.state.errorMessage}</div>,
-            this.getForm()
-        ];
-
-        var importInProgress = [
-            <div className="alert alert-info" role="alert">Import processing...</div>
-        ];
-
-        var successImportBody = [
-            <div className="alert alert-success" role="alert">Import succeeded!</div>
-        ];
-
         var body = beforeImportBody;
 
         return (
-            <div className="modal fade">
+            <div className="modal fade" id="settings_modal">
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
