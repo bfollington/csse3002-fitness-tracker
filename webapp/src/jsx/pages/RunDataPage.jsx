@@ -29,9 +29,13 @@ export class RunDataPage extends React.Component {
                 datasetFill : true,
                 scaleShowHorizontalLines: true,
                 scaleShowVerticalLines: true,
-                showTooltips: false,
+                showTooltips: true,
+                pointHitDetectionRadius : 1,
                 scaleLabel: function(value) {
                     return value.value + " km/hr"
+                },
+                tooltipTemplate: function(value) {
+                    return ( (value.value).toFixed( 1 ) + " km/hr" )
                 }
             }
         };
@@ -45,14 +49,31 @@ export class RunDataPage extends React.Component {
                     run: result,
                 });
 
-                console.log(result);
-
                 var data = this.state.chartData;
                 var labels = [];
                 var speeds = [];
 
+                function pretty_print_time( seconds ) {
+                    let minutes = Math.floor( seconds / 60 ) % 60;
+                    let hours = Math.floor( seconds / 3600 ) % 24;
+
+                    let str = "";
+                    if ( hours > 0 ) {
+                        str += hours + "h ";
+                    }
+                    str += minutes + "m";
+                    return str;
+                }
+
+                let interval = parseInt( result.speed_graph.x.length / 10 );
+
                 for (var i = 0; i < result.speed_graph.x.length; i++) {
-                    labels.push("");
+                    let label = "";
+                    if ( i % interval == 0 ) {
+                        label = pretty_print_time( parseInt( result.speed_graph.x[i] ) );
+                        console.log( label );
+                    }
+                    labels.push(label);
                     speeds.push(result.speed_graph.y[i] * 60 * 60 / 1000); // to kmph
                 }
 
