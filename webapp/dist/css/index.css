@@ -63,6 +63,9 @@ body {
     border-width: 1px; }
     .navbar .navbar-btn.btn-default:hover {
       background-color: #455A64; }
+  .navbar .settings-icon {
+    font-size: 1.5em;
+    margin: 0; }
 
 .fb-share-button span, .fb-share-button iframe {
   width: 55px !important;

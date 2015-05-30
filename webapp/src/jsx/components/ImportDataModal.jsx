@@ -85,7 +85,7 @@ export class ImportDataModal extends React.Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 className="modal-title">Connect to Device</h4>
+                            <h4 className="modal-title"><i className="ion-upload" /> Import your Runs</h4>
                         </div>
                         <div className="modal-body">
                             {body}
