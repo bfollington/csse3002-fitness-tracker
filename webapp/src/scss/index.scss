@@ -44,6 +44,9 @@ body {
     padding-top: 1em;
     padding-bottom: 1em;
 
+    border-radius: 0px;
+    border: 0px;
+
     .navbar-header > a {
         color: $color-theme-0;
 
@@ -60,7 +63,7 @@ body {
         }
     }
 
-    .navbar-btn .btn-default {
+    .navbar-btn.btn-default {
         background-color: $color-theme-800;
         color: $color-theme-50;
 

@@ -121,19 +121,16 @@ class FTServer(SimpleHTTPRequestHandler):
         try:
             runs = self.db.get_runs_since_date(calendar.timegm(time.strptime(date, '%Y-%m-%d')))
             print "Runs: {}".format(runs)
-        except:
-            success = False
 
-        final_runs = []
-        for run in runs:
-            dict = run.to_dict()
-            dict["_id"] = run._id
-            final_runs.append(dict)
-
-        if success:
+            final_runs = []
+            for run in runs:
+                dict = run.to_dict()
+                dict["_id"] = run._id
+                final_runs.append(dict)
             self.wfile.write( dumps( {"success": True, "runs": final_runs} ) )
-        else:
+        except:
             self.wfile.write( dumps( {"success": False, "message": "No runs in date range."} ) )
+
         self.wfile.close()
 
     def api_latest_run_request(self):
@@ -218,11 +215,11 @@ class FTServer(SimpleHTTPRequestHandler):
 
                     load_data = form["load_data"].value
 
-                    resp = json.dumps({"success": True})
+                    resp = dumps({"success": True})
                     self.wfile.write(resp)
                     return
 
-            resp = json.dumps({"success": False, "error": "Invalid load request."})
+            resp = dumps({"success": False, "error": "Invalid load request."})
             return
 
         if (self.path == "/api/save_example"):
@@ -233,12 +230,12 @@ class FTServer(SimpleHTTPRequestHandler):
             if form.has_key( "save_data" ):
                 save_data = form["save_data"].value
 
-                resp = json.dumps({"success": True})
+                resp = dumps({"success": True})
                 self.wfile.write(resp)
                 return
 
             # If no base64_image field was present, the upload is invalid
-            resp = json.dumps({"success": False, "error": "Invalid save request."})
+            resp = dumps({"success": False, "error": "Invalid save request."})
             self.wfile.write(resp)
             return
 
@@ -294,7 +291,7 @@ class FTServer(SimpleHTTPRequestHandler):
 
 
         # No route could be matched, so return an error
-        resp = json.dumps({"success": False, "error": "Invalid path."})
+        resp = dumps({"success": False, "error": "Invalid path."})
         self.wfile.write(resp)
         return
 
