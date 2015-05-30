@@ -5,12 +5,19 @@ export class RadarChart extends React.Component {
 
     }
 
-    componentDidMount() {
+    createChart() {
         var context = $(React.findDOMNode(this)).find(".chart")[0].getContext("2d");
-
-        var chart = new ChartJs(context).Radar(this.props.data, {});
+        this.chart = new ChartJs(context).Radar(this.props.data, this.props.opts);
     }
 
+    componentDidMount() {
+        this.createChart();
+    }
+
+    componentWillUpdate() {
+        this.chart.destroy();
+        this.createChart();
+    }
     render() {
         return (
             <div>

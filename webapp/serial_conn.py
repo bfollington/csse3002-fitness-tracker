@@ -17,11 +17,11 @@ class SerialConnector():
     def __init__(self):
         self.serialConn = SerialIO()
         self.processor = DataProcessor()
-        
+
     '''
     Reads all the available run data from the Flora.
     Returns a list of runs, which consist of a list of tuples representing (timestamp, lat, long)
-    Each run is post processed with smoothing, etc. 
+    Each run is post processed with smoothing, etc.
     '''
     def get_runs(self, password=None):
         if not self.serialConn.connect_flora(password):
@@ -34,16 +34,16 @@ class SerialConnector():
 
 class DataProcessor():
     '''
-    Parses, processes and performs smoothing on a data dump from the Flora. 
+    Parses, processes and performs smoothing on a data dump from the Flora.
     Returns a list of runs, which consist of a list of tuples representing (timestamp, lat, long)
     '''
     def process_all_runs(self, runDataStr, threshold):
         runData = self.parse_rundata(runDataStr)
         runs = self.split_runs(runData, threshold)
-        
+
         for i in range(0, len(runs)):
             #5 point average = side length of 2
-            runs[i] = self.smooth_run(runs[i], 2)
+            runs[i] = self.smooth_run(runs[i], 1)
 
         return runs
 
@@ -55,17 +55,17 @@ class DataProcessor():
 
         #Convert to list of tuples
         runData = []
-        
+
         for dataPoint in runDataArr:
             timeLocSplit = dataPoint.split("=")
             timestamp = int(timeLocSplit[0])
             loc = timeLocSplit[1].split("|")
             lat = float(loc[0])
             lon = float(loc[1])
-            
+
             if timestamp != 0 and lat != 0 and lon != 0:
                 runData.append((timestamp, lat, lon))
-        
+
         return runData
 
     '''
@@ -142,9 +142,9 @@ class FileSerialIO():
         return str
 
 '''
-A class which wraps the serial package to provide an interface to connect with the GPS tracking hardware. 
+A class which wraps the serial package to provide an interface to connect with the GPS tracking hardware.
 '''
-class SerialIO():    
+class SerialIO():
     def __init__(self):
         self.baudrate = 115200
         self.current_ports = []
@@ -158,7 +158,7 @@ class SerialIO():
     '''
     def get_port_names(self):
         return self.port_names
-    
+
     '''
     Refreshes the current port listing. Call get_port_names() again to get the new port names.
     '''
@@ -177,23 +177,23 @@ class SerialIO():
         self.s = serial.Serial(self.current_ports[index][0], self.baudrate, writeTimeout=1, timeout=1)
         if not self.s.isOpen():
             return False
-        
+
         #Connect
         if (password):
             self.s.write("CONNECT " + password + "\n")
         else:
             self.s.write("CONNECT\n")
-        
+
         reply = self.s.readline()
         if not reply == "OK\n":
             self.s.close()
             print reply
             return False
-            
+
         self.connected = True
         print "Connected successfully."
         return True
-        
+
     '''
     Attempts to connect to an Adafruit Flora.
     '''
@@ -201,22 +201,22 @@ class SerialIO():
         self.refresh_list()
         ports = self.get_port_names()
         run_tracker_port = None
-        
+
         for i in range(0, len(ports)):
             port = ports[i]
             if port.startswith("Adafruit Flora"):
                 run_tracker_port = i
                 break
-            
+
         if (run_tracker_port == -1):
             #Didn't find flora
             return False
-            
+
         if not self.connect(run_tracker_port, password):
             return False
-            
+
         return True
-            
+
     '''
     Reads all the available run data from the serial connection.
     Returns the exact string reply the device sends to us, with no formatting or processing.
@@ -224,40 +224,40 @@ class SerialIO():
     def read_all_runs(self):
         if not self.connected:
             return None
-            
+
         #Query for run data
         self.s.write("RUNDATA\n")
         runData = self.s.readline().strip()
-        
+
         #Just return what we got from the Flora directly
         return runData
-    
+
     '''
-    Reads the data from the most recent run from the serial connection.         
-    TODO: Not used right now as it isn't implemented on the Flora. Use read_all_data instead.        
+    Reads the data from the most recent run from the serial connection.
+    TODO: Not used right now as it isn't implemented on the Flora. Use read_all_data instead.
     '''
     def read_last_run(self):
         if not self.connected:
             return None
-                
+
         #Count runs
         self.s.write("COUNTRUNS\n")
         runCount = int(self.s.readline().strip())
-        
+
         #Get last run
         self.s.write("RUNDATA " + str(runCount - 1) + "\n")
         runDataStr = self.s.readline().strip()
         runData = runDataStr.split(",")[:-1]
-        
+
         return runData
-        
+
     '''
     Sends a command to the device.
     '''
     def send_command(self, command_str):
         #Commands will be expanded to include passwords, etc in a future sprint. Only basic GPS data access is available in this sprint, through read_last_run()
         pass
-    
+
     '''
     Closes the serial connection.
     '''

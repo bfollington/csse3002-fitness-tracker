@@ -5,10 +5,18 @@ export class PieChart extends React.Component {
 
     }
 
-    componentDidMount() {
+    createChart() {
         var context = $(React.findDOMNode(this)).find(".chart")[0].getContext("2d");
+        this.chart = new ChartJs(context).Pie(this.props.data, this.props.opts);
+    }
 
-        var chart = new ChartJs(context).Pie(this.props.data, {});
+    componentDidMount() {
+        this.createChart();
+    }
+
+    componentWillUpdate() {
+        this.chart.destroy();
+        this.createChart();
     }
 
     render() {
