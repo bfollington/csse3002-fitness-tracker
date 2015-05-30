@@ -121,19 +121,16 @@ class FTServer(SimpleHTTPRequestHandler):
         try:
             runs = self.db.get_runs_since_date(calendar.timegm(time.strptime(date, '%Y-%m-%d')))
             print "Runs: {}".format(runs)
-        except:
-            success = False
 
-        final_runs = []
-        for run in runs:
-            dict = run.to_dict()
-            dict["_id"] = run._id
-            final_runs.append(dict)
-
-        if success:
+            final_runs = []
+            for run in runs:
+                dict = run.to_dict()
+                dict["_id"] = run._id
+                final_runs.append(dict)
             self.wfile.write( dumps( {"success": True, "runs": final_runs} ) )
-        else:
+        except:
             self.wfile.write( dumps( {"success": False, "message": "No runs in date range."} ) )
+
         self.wfile.close()
 
     def api_latest_run_request(self):
