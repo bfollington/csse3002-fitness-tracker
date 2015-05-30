@@ -57,11 +57,11 @@ body {
     color: #ECEFF1; }
     .navbar .navbar-nav > li > a:hover {
       color: #B0BEC5; }
-  .navbar .navbar-btn .btn-default {
+  .navbar .navbar-btn.btn-default {
     background-color: #37474F;
     color: #ECEFF1;
     border-width: 1px; }
-    .navbar .navbar-btn .btn-default:hover {
+    .navbar .navbar-btn.btn-default:hover {
       background-color: #455A64; }
 
 .fb-share-button span, .fb-share-button iframe {
