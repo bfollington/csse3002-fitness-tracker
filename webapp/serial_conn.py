@@ -25,6 +25,7 @@ class SerialConnector():
     '''
     def get_runs(self, password=None):
         if not self.serialConn.connect_flora(password):
+            print "Could not connect to device?"
             return None
         runDataStr = self.serialConn.read_all_runs()
         #Split runs based on a threshold of 500 seconds
@@ -43,7 +44,8 @@ class DataProcessor():
 
         for i in range(0, len(runs)):
             #5 point average = side length of 2
-            runs[i] = self.smooth_run(runs[i], 1)
+            if len(runs[i]) > 10:
+                runs[i] = self.smooth_run(runs[i], 1)
 
         return runs
 
@@ -57,6 +59,7 @@ class DataProcessor():
         runData = []
 
         for dataPoint in runDataArr:
+            print dataPoint
             timeLocSplit = dataPoint.split("=")
             timestamp = int(timeLocSplit[0])
             loc = timeLocSplit[1].split("|")
@@ -86,7 +89,7 @@ class DataProcessor():
             lastPoint = runData[i - 1]
             thisPoint = runData[i]
 
-            #If more than 500 seconds pass between two waypoints, assume it's a new run
+            #If more than threshold seconds pass between two waypoints, assume it's a new run
             if thisPoint[0] - lastPoint[0] > threshold:
                 runs.append(runData[lastEnd:i])
                 lastEnd = i + 1
@@ -204,7 +207,7 @@ class SerialIO():
 
         for i in range(0, len(ports)):
             port = ports[i]
-            if port.startswith("Adafruit Flora"):
+            if port.startswith("Adafruit Flora") or "usb" in port.lower():
                 run_tracker_port = i
                 break
 
@@ -228,6 +231,8 @@ class SerialIO():
         #Query for run data
         self.s.write("RUNDATA\n")
         runData = self.s.readline().strip()
+
+        print runData
 
         #Just return what we got from the Flora directly
         return runData

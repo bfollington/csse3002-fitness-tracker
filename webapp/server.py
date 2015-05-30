@@ -8,6 +8,7 @@ from serial_conn import SerialConnector
 import time
 import calendar
 from dateutil.parser import parse
+import run_stats
 
 import db
 
@@ -79,7 +80,7 @@ class FTServer(SimpleHTTPRequestHandler):
 
             if self.path.startswith("/api/settings"):
                 return self.api_settings_request()
-            
+
             print "Path: {}".format(self.path)
 
         return SimpleHTTPRequestHandler.do_GET(self)
@@ -251,13 +252,13 @@ class FTServer(SimpleHTTPRequestHandler):
 
             run_data = self.serial.get_runs(password)
             if run_data != None:
-                resp = dumps(run_data)
+                resp = dumps({"success": True})
                 user_settings = self.db.get_settings()
                 height = user_settings['height']
                 weight = user_settings['weight']
                 age = user_settings['age']
                 gender = user_settings['gender']
-                
+
                 for run in run_data:
 
                     waypoints = []

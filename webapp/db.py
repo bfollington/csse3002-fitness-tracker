@@ -141,7 +141,7 @@ class RunDatabase:
             return False
 
     def get_run_list( self ):
-        runs = self.db.runs.find( {}, { "start_time": 1, "end_time": 1 } )
+        runs = self.db.runs.find( {}, { "start_time": 1, "end_time": 1 } ).sort("start_time")
 
         def parse_mongo_obj( obj ):
             return {
@@ -178,19 +178,19 @@ def demo_insert( db, path ):
     s = serial_conn.FileSerialConnector(path)
     run_data = s.get_runs()
     #run_data is a list of runs, each run is a list of waypoint tuples
-    
+
     user_settings = db.get_settings()
     height = user_settings['height']
     weight = user_settings['weight']
     age = user_settings['age']
     gender = user_settings['gender']
-    
+
     for run in run_data:
         wps = []
         for waypoint in run:
             wps.append(Waypoint(*waypoint))
         run = Run(wps)
-        
+
         stats = run_stats.calc_statistics(wps, height, weight, age, gender)
         run.set_statistics(stats)
         db.push_run(run)
