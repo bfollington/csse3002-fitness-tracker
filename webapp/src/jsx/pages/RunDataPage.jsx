@@ -113,9 +113,10 @@ export class RunDataPage extends React.Component {
                         </h1>
                     </div>
                     <div className="row margin-top">
-                        <div className="col-md-4 center-text"><h3>Total Distance</h3> {this.state.run.distance.toFixed(2)}m</div>
-                        <div className="col-md-4 center-text"><h3>Average Speed</h3> {(this.state.run.average_speed * 60 * 60 / 1000).toFixed(2)}kmph</div>
-                        <div className="col-md-4 center-text"><h3>Duration</h3> { parseInt(this.state.run.duration / 60) } mins {this.state.run.duration % 60} seconds</div>
+                        <div className="col-md-3 center-text"><h3>Total Distance</h3> {this.state.run.distance.toFixed(2)}m</div>
+                        <div className="col-md-3 center-text"><h3>Average Speed</h3> {(this.state.run.average_speed * 60 * 60 / 1000).toFixed(2)}kmph</div>
+                        <div className="col-md-3 center-text"><h3>Duration</h3> { parseInt(this.state.run.duration / 60) } mins {this.state.run.duration % 60} seconds</div>
+                        <div className="col-md-3 center-text"><h3>Kilojoules Burned</h3>{this.state.run.kilojoules.toFixed(2)} kj</div>
                     </div>
                     <hr />
                     <div className="row">

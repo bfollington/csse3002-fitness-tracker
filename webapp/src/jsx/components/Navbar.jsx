@@ -1,3 +1,6 @@
+import {ModalTrigger} from "./ModalTrigger.jsx"
+import {AppSettingsModal} from "./AppSettingsModal.jsx"
+
 export class Navbar extends React.Component {
     render() {
         return (
@@ -33,14 +36,8 @@ export class Navbar extends React.Component {
                         </ul>
 
                         <ul className="nav navbar-nav navbar-right">
-                            <li className="dropdown">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings <span className="caret"></span></a>
-                                <ul className="dropdown-menu" role="menu">
-                                    <li><a href="#">Your Device</a></li>
-                                    <li><a href="#">Application Settings</a></li>
-                                    <li className="divider"></li>
-                                    <li><a href="#">Logout</a></li>
-                                </ul>
+                            <li>
+                                <ModalTrigger modal={<AppSettingsModal />} className="btn btn-default" buttonText="Settings" />
                             </li>
                         </ul>
                     </div>
