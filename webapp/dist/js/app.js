@@ -8010,7 +8010,8 @@ var ImportDataModal = exports.ImportDataModal = (function (_React$Component) {
                                 React.createElement(
                                     "h4",
                                     { className: "modal-title" },
-                                    "Connect to Device"
+                                    React.createElement("i", { className: "ion-upload" }),
+                                    " Import your Runs"
                                 )
                             ),
                             React.createElement(
@@ -8119,6 +8120,8 @@ var Navbar = require("components/Navbar.jsx").Navbar;
 
 var ModalTrigger = require("components/ModalTrigger.jsx").ModalTrigger;
 
+var UploadDataButton = require("components/UploadDataButton.jsx").UploadDataButton;
+
 var ImportDataModal = require("components/ImportDataModal.jsx").ImportDataModal;
 
 var MainNavbar = exports.MainNavbar = (function (_React$Component) {
@@ -8142,12 +8145,7 @@ var MainNavbar = exports.MainNavbar = (function (_React$Component) {
         render: {
             value: function render() {
 
-                var links = [{ name: "Dashboard", url: "/dashboard", click: function click() {}, context: this, button: false }, { name: "Run History", url: "/history", click: function click() {}, context: this, button: false }, { component: React.createElement(ModalTrigger, { modal: React.createElement(ImportDataModal, null), button: true, className: "btn btn-default navbar-btn", buttonText: React.createElement(
-                            "span",
-                            null,
-                            React.createElement("i", { className: "ion ion-upload" }),
-                            " Import Data"
-                        ) }) }];
+                var links = [{ name: "Dashboard", icon: "ion-ios-home", url: "/dashboard", click: function click() {}, context: this, button: false }, { name: "Run History", icon: "ion-stats-bars", url: "/history", click: function click() {}, context: this, button: false }];
 
                 return React.createElement(Navbar, { links: links });
             }
@@ -8157,7 +8155,7 @@ var MainNavbar = exports.MainNavbar = (function (_React$Component) {
     return MainNavbar;
 })(React.Component);
 
-},{"components/ImportDataModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ImportDataModal.jsx","components/ModalTrigger.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx","components/Navbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Navbar.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Map.jsx":[function(require,module,exports){
+},{"components/ImportDataModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ImportDataModal.jsx","components/ModalTrigger.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx","components/Navbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Navbar.jsx","components/UploadDataButton.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/UploadDataButton.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Map.jsx":[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8433,6 +8431,10 @@ var ModalTrigger = require("./ModalTrigger.jsx").ModalTrigger;
 
 var AppSettingsModal = require("./AppSettingsModal.jsx").AppSettingsModal;
 
+var ImportDataModal = require("components/ImportDataModal.jsx").ImportDataModal;
+
+var UploadDataButton = require("components/UploadDataButton.jsx").UploadDataButton;
+
 var Navbar = exports.Navbar = (function (_React$Component) {
     function Navbar() {
         _classCallCheck(this, Navbar);
@@ -8506,6 +8508,8 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                                                 React.createElement(
                                                     "a",
                                                     { href: entry.url, onClick: entry.click.bind(entry.context) },
+                                                    React.createElement("i", { className: entry.icon }),
+                                                    " ",
                                                     entry.name
                                                 )
                                             );
@@ -8519,7 +8523,12 @@ var Navbar = exports.Navbar = (function (_React$Component) {
                                 React.createElement(
                                     "li",
                                     null,
-                                    React.createElement(ModalTrigger, { modal: React.createElement(AppSettingsModal, null), button: false, className: "settings-icon", buttonText: React.createElement("i", { className: "ion ion-gear-a" }) })
+                                    React.createElement(ModalTrigger, { modal: React.createElement(ImportDataModal, null), button: true, className: "btn btn-default navbar-btn margin-right", buttonText: React.createElement(UploadDataButton, null) })
+                                ),
+                                React.createElement(
+                                    "li",
+                                    null,
+                                    React.createElement(ModalTrigger, { modal: React.createElement(AppSettingsModal, null), button: true, className: "btn btn-default navbar-btn", buttonText: React.createElement("i", { className: "ion ion-gear-a" }) })
                                 )
                             )
                         )
@@ -8532,7 +8541,7 @@ var Navbar = exports.Navbar = (function (_React$Component) {
     return Navbar;
 })(React.Component);
 
-},{"./AppSettingsModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/AppSettingsModal.jsx","./ModalTrigger.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/PieChart.jsx":[function(require,module,exports){
+},{"./AppSettingsModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/AppSettingsModal.jsx","./ModalTrigger.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx","components/ImportDataModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ImportDataModal.jsx","components/UploadDataButton.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/UploadDataButton.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/PieChart.jsx":[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -8831,6 +8840,38 @@ var TwitterShareButton = exports.TwitterShareButton = (function (_React$Componen
     return TwitterShareButton;
 })(React.Component);
 
+},{}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/UploadDataButton.jsx":[function(require,module,exports){
+"use strict";
+
+var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var UploadDataButton = exports.UploadDataButton = (function () {
+    function UploadDataButton() {
+        _classCallCheck(this, UploadDataButton);
+    }
+
+    _createClass(UploadDataButton, {
+        render: {
+            value: function render() {
+                return React.createElement(
+                    "span",
+                    null,
+                    React.createElement("i", { className: "ion ion-upload" }),
+                    " Import Data"
+                );
+            }
+        }
+    });
+
+    return UploadDataButton;
+})();
+
 },{}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/DashboardPage.jsx":[function(require,module,exports){
 "use strict";
 
@@ -8864,6 +8905,8 @@ var _componentsSocialSharingJsx = require("components/SocialSharing.jsx");
 
 var FacebookShareButton = _componentsSocialSharingJsx.FacebookShareButton;
 var TwitterShareButton = _componentsSocialSharingJsx.TwitterShareButton;
+
+var UploadDataButton = require("components/UploadDataButton.jsx").UploadDataButton;
 
 var DashboardPage = exports.DashboardPage = (function (_React$Component) {
     function DashboardPage() {
@@ -9062,7 +9105,7 @@ var DashboardPage = exports.DashboardPage = (function (_React$Component) {
                             React.createElement(
                                 "div",
                                 { className: "center-text" },
-                                React.createElement(ModalTrigger, { modal: React.createElement(ImportDataModal, null), button: true, className: "btn btn-default navbar-btn margin-left margin-right", buttonText: "Import Data" })
+                                React.createElement(ModalTrigger, { modal: React.createElement(ImportDataModal, null), button: true, className: "btn btn-default navbar-btn margin-left margin-right", buttonText: React.createElement(UploadDataButton, null) })
                             )
                         )
                     );
@@ -9182,7 +9225,7 @@ var DashboardPage = exports.DashboardPage = (function (_React$Component) {
     return DashboardPage;
 })(React.Component);
 
-},{"components/BarChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/BarChart.jsx","components/Body.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Body.jsx","components/ImportDataModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ImportDataModal.jsx","components/LineChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/LineChart.jsx","components/MainNavbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/MainNavbar.jsx","components/ModalTrigger.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx","components/PieChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/PieChart.jsx","components/RadarChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/RadarChart.jsx","components/SocialSharing.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/SocialSharing.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/FileNotFoundPage.jsx":[function(require,module,exports){
+},{"components/BarChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/BarChart.jsx","components/Body.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/Body.jsx","components/ImportDataModal.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ImportDataModal.jsx","components/LineChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/LineChart.jsx","components/MainNavbar.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/MainNavbar.jsx","components/ModalTrigger.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/ModalTrigger.jsx","components/PieChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/PieChart.jsx","components/RadarChart.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/RadarChart.jsx","components/SocialSharing.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/SocialSharing.jsx","components/UploadDataButton.jsx":"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/components/UploadDataButton.jsx"}],"/Users/Ben/Projects/Python/csse3002/webapp/src/jsx/pages/FileNotFoundPage.jsx":[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();

@@ -15,9 +15,8 @@ export class MainNavbar extends React.Component {
     render() {
 
         var links = [
-            {name: "Dashboard", url: "/dashboard", click: function() {}, context: this, button: false},
-            {name: "Run History", url: "/history", click: function() {}, context: this, button: false},
-            {component: <ModalTrigger modal={<ImportDataModal />} button={true} className="btn btn-default navbar-btn" buttonText={<UploadDataButton />} /> }
+            {name: "Dashboard", icon: "ion-ios-home", url: "/dashboard", click: function() {}, context: this, button: false},
+            {name: "Run History", icon: "ion-stats-bars", url: "/history", click: function() {}, context: this, button: false}
         ];
 
         return (

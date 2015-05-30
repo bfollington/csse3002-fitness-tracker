@@ -1,5 +1,7 @@
 import {ModalTrigger} from "./ModalTrigger.jsx"
 import {AppSettingsModal} from "./AppSettingsModal.jsx"
+import {ImportDataModal} from "components/ImportDataModal.jsx"
+import {UploadDataButton} from "components/UploadDataButton.jsx"
 
 export class Navbar extends React.Component {
     render() {
@@ -27,7 +29,7 @@ export class Navbar extends React.Component {
                                         if (entry.button) {
                                             return (<li><button className="btn btn-default navbar-btn" onClick={entry.click.bind(entry.context)}>{entry.name}</button></li>);
                                         } else {
-                                            return (<li><a href={entry.url} onClick={entry.click.bind(entry.context)}>{entry.name}</a></li>);
+                                            return (<li><a href={entry.url} onClick={entry.click.bind(entry.context)}><i className={entry.icon} /> {entry.name}</a></li>);
                                         }
                                     }
 
@@ -37,7 +39,10 @@ export class Navbar extends React.Component {
 
                         <ul className="nav navbar-nav navbar-right">
                             <li>
-                                <ModalTrigger modal={<AppSettingsModal />} button={false} className="settings-icon" buttonText={<i className="ion ion-gear-a"></i>} />
+                                <ModalTrigger modal={<ImportDataModal />} button={true} className="btn btn-default navbar-btn margin-right" buttonText={<UploadDataButton />} />
+                            </li>
+                            <li>
+                                <ModalTrigger modal={<AppSettingsModal />} button={true} className="btn btn-default navbar-btn" buttonText={<i className="ion ion-gear-a"></i>} />
                             </li>
                         </ul>
                     </div>
