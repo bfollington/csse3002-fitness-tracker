@@ -14,7 +14,7 @@ export class DashboardPage extends React.Component {
             runs: null,
             speedGraph: {
                 data: {
-                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    labels: [],
                     datasets: [
                         {
                             label: "My Second dataset",
@@ -24,7 +24,7 @@ export class DashboardPage extends React.Component {
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: [28, 48, 40, 19, 86, 27, 90]
+                            data: []
                         }
                     ]
                 },
@@ -36,7 +36,7 @@ export class DashboardPage extends React.Component {
             },
             distanceGraph: {
                 data: {
-                    labels: ["January", "February", "March", "April", "May", "June", "July"],
+                    labels: [],
                     datasets: [
                         {
                             label: "My Second dataset",
@@ -46,7 +46,7 @@ export class DashboardPage extends React.Component {
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: [28, 48, 40, 19, 86, 27, 90]
+                            data: []
                         }
                     ]
                 },
@@ -199,7 +199,7 @@ export class DashboardPage extends React.Component {
 
         var content = null;
 
-        if (!this.state.runs) {
+        if (!this.state.runs || this.state.runs.length == 0) {
             content = (
                 <div className="row alert alert-warning" role="alert">
                     <div className="col-xs-12">
@@ -239,7 +239,7 @@ export class DashboardPage extends React.Component {
                                                     <tr>
                                                         <td>{window.app.moment(run.start_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.start_time * 1000).format(window.app.dayFormat)}</td>
                                                         <td>{window.app.moment(run.end_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.end_time * 1000).format(window.app.dayFormat)}</td>
-                                                        <td><a href={"/run/" + run._id}>View</a></td>
+                                                        <td><a className="btn btn-default" href={"/run/" + run._id}>View</a></td>
                                                     </tr>
                                                 );
                                             }) : ""
