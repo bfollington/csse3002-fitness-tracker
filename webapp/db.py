@@ -40,6 +40,7 @@ class Run:
         self.max_speed = stats['max_speed']
         self.speed_graph = stats['speed_graph']
         self.kilojoules = stats['kilojoules']
+
         # Does not get an ID until it is pushed to the database
         self._id = ""
 
@@ -63,8 +64,7 @@ class Run:
             "distance": self.distance,
             "average_speed": self.average_speed,
             "max_speed": self.max_speed,
-            "speed_graph": self.speed_graph,
-            "kilojoules": self.kilojoules
+            "speed_graph": self.speed_graph
         }
 
 
@@ -85,6 +85,34 @@ class RunDatabase:
         run.id = self.db.runs.insert_one( run.to_dict() ).inserted_id
         return run.id
 
+    def set_settings( self, settings ):
+        try:
+            to_persist = {
+                "height": settings[ "height" ],
+                "weight": settings[ "weight" ],
+                "age": settings[ "age" ],
+                "gender": settings[ "gender" ]
+            }
+            self.db.settings.remove()
+            self.db.settings.insert_one( to_persist )
+            return True
+        except:
+            print("Invalid settings")
+            return False
+
+    def get_settings( self ):
+        try:
+            settings = self.db.settings.find_one()
+            to_return = {
+                "height": int( settings[ u"height" ] ),
+                "weight": int( settings[ u"weight" ] ),
+                "age": int( settings[ u"age" ] ),
+                "gender": str( settings[ u"gender" ] )
+            }
+            return to_return
+        except:
+            print("Settings not found.")
+
     def get_runs_since_date( self, d ):
         try:
             runs = self.db.runs.find({"start_time": {"$gt": d}}).sort("start_time")
@@ -103,7 +131,6 @@ class RunDatabase:
         except:
             print("Latest run not found.")
             return False
-
 
     def get_run_list( self ):
         runs = self.db.runs.find( {}, { "start_time": 1, "end_time": 1 } )
@@ -138,6 +165,7 @@ class RunDatabase:
             return False
 
 
+
 def demo_insert( db, path ):
     s = serial_conn.FileSerialConnector(path)
     run_data = s.get_runs()
@@ -156,6 +184,16 @@ if ( __name__ == "__main__" ):
 
     # Clear the runs database, if it exists
     db.clear_runs()
+
+
+    db.set_settings({
+        "height": 180,
+        "weight": 70,
+        "age": 19,
+        "gender": "male"
+    })
+    print db.get_settings()
+
 
     # Insert some dummy data
     demo_insert( db, "demo_insert.txt" )
