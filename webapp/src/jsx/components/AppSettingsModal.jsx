@@ -113,7 +113,7 @@ export class AppSettingsModal extends React.Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 className="modal-title">Application Settings</h4>
+                            <h4 className="modal-title"><i className="ion ion-gear-a"></i> Application Settings</h4>
                         </div>
                         <div className="modal-body">
                             {body}
