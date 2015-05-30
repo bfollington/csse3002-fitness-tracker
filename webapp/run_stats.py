@@ -7,7 +7,10 @@ null = None
     Calculates metabolic equivalent for the specified speed in meters per second
 '''
 def mps_to_mets(mps):
-    return (0.2032 * pow(mps, 3)) - (2.1463 * mps * mps) + (10.12 * mps) - 5.9764
+    mets = (0.2032 * pow(mps, 3)) - (2.1463 * mps * mps) + (10.12 * mps) - 5.9764
+    if mets < 6:
+        mets = 6
+    return mets
 
 '''
     Calculates BMR in kCal for the specified user parameters
