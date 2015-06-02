@@ -25,6 +25,10 @@ export class ImportDataModal extends React.Component {
             console.log(result);
             if (result.success) {
                 this.setState({importFailed: false});
+
+                setTimeout(function() {
+                    window.location.reload();
+                }, 500);
             } else {
                 this.setState({
                     importFailed: true,
