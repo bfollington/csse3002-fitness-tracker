@@ -17,15 +17,36 @@ GPSInterface gps;
 String _password = "magicunicorn";
 
 bool connected = false;
-bool first_pos = true;
-bool sec_pos = true;
-int distance = 0; // Distance travelled (in m)
-bool long_vib = false;
-int long_vib_cnt = 0;
-float prevLat, prevLon;
+uint32_t lastTime; //For haptic notifications
+int vibrateCount = 0; //Tracking small vibrations (towards a large)
+uint32_t lastLogTime; //For GPS reconfiguration
+
+#undef PI //Define PI as a float, not a double.
+#define PI 3.14159265f
+
+float cumulativeDistance = 0.0f;
+//Meaningless latlon to indicate uninitialised.
+float lastLat = 360, lastLon = 361;
+
+//In meters
+#define SMALL_VIBRATE_THRESHOLD	100.0f
+#define LARGE_VIBRATE_COUNT 5 //The number of small vibrations that will be equal to a large vibration.
+
+#define COMMAND_COUNT 6
+#define MAX_COMMAND_LENGTH 10
+char *commands[] = {
+	"CONNECT ",
+	"RUNDATA\n",
+	"CLEAR\n",
+	"CAPTURE\n",
+	"OK\n",
+	"VIBRATE\n"
+};
+char serialBuff[10];
+int serialBuffi = 0;
 
 void setup() {
-	while (!Serial);
+	//while (!Serial);
 	Serial.begin(115200);
 	delay(400); //Give everything time to warm up.
 
@@ -33,18 +54,176 @@ void setup() {
 	pinMode(VIB_PIN, OUTPUT);
 	digitalWrite(VIB_PIN, LOW);
 
+	lastLogTime = lastTime = millis();
+
+	for (int i = 0; i < MAX_COMMAND_LENGTH; i++) {
+		serialBuff[i] = 0;
+	}
+
 	gps.setup();
 }
 
-void loop() {
-	String command = Serial.readStringUntil('\n');
+int matchCommand() {
+	while (Serial.available()) {
+		int c = Serial.read();
+		serialBuff[serialBuffi++] = (char)c;
+		serialBuffi %= MAX_COMMAND_LENGTH;
+
+		//Now try to match a command.
+		for (int i = 0; i < COMMAND_COUNT; i++) {
+			//Try to match commands[i].
+			char *command = commands[i];
+			for (int j = 0; j < MAX_COMMAND_LENGTH; j++) {
+				//Start at every possible index.
+				for (int k = 0; k < MAX_COMMAND_LENGTH; k++) {
+					if (command[k] == 0) {
+						//Matched
+						for (int l = 0; l < MAX_COMMAND_LENGTH; l++) {
+							serialBuff[l] = 0;
+						}
+						return i + 1;
+					}
+
+					if (serialBuff[(j + k) % MAX_COMMAND_LENGTH] != command[k]) {
+						break;
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+void processRundata() {
+	gps.stopLogging();
+
+	float lat, lon;
+	uint32_t timestamp;
+	if (!gps.getData_Init()) {
+		Serial.println();
+		return;
+	}
+
+	while (gps.getData_Next(&lat, &lon, &timestamp)) {
+		Serial.print(timestamp);
+		Serial.print("=");
+		Serial.print(lat, 5);
+		Serial.print("|");
+		Serial.print(lon, 5);
+		Serial.print(",");
+	}
+	gps.readSerial();
+
+	//Print our final newline.
+	Serial.println();
+}
+
+void processCapture() {
+	gps.stopLogging();
 	
-	if (!connected) {
-		if (command.startsWith("CONNECT")) {
+	//This is a debug command, so that we can 'capture' live.
+	Serial.println("Starting data capture");
+
+	gps.beginLogging();
+
+	char *exitCommand = "STOP";
+	int i = 0;
+	Serial.println("Send 'STOP' to stop logging.");
+	uint32_t lastTime = millis();
+	while (exitCommand[i]) {
+		if (Serial.available()) {
+			if (Serial.read() == exitCommand[i])
+				i++;
+			else
+				i = 0;
+		}
+		//Serial.print(".");
+		gps.readSerial();
+
+		uint32_t thisTime = millis();
+		if (thisTime < lastTime)
+			continue;  //Oh well.
+		if (thisTime - lastTime > 2000) {
+			updateDistance();
+			giveHapticFeedback();
+			lastTime += 2000;
+
+			float lat, lon;
+			if (gps.getPosition(&lat, &lon)) {
+				Serial.print(lat, 6);
+				Serial.print("|");
+				Serial.print(lon, 6);
+				Serial.println();
+			}
+		}
+	}
+	Serial.println("Stopping data capture...");
+	gps.stopLogging();
+	Serial.println("Stopped.");
+}
+
+float calcDist(float lat1, float lon1, float lat2, float lon2) {
+	//Calculations are slow.
+	gps.readSerial();
+
+	const float radius = 6371000; //Of Earth. Adjust to run on Mars.
+	float latDist = (lat2 - lat1) * PI / 180.0f;
+	float longDist = (lon2 - lon1) * PI / 180.0f;
+
+	float c = sinf(latDist / 2);
+	float a = sinf(longDist / 2);
+	float r = cosf(lat1 *  PI / 180.0) * cosf(lat2 * PI / 180.0);
+	float l = c * c + a * a * r;
+
+	gps.readSerial();
+
+	return radius * 2 * atan2f(sqrtf(l), sqrtf(1 - l));
+}
+
+void updateDistance() {
+	float lat, lon;
+	if (!gps.getPosition(&lat, &lon))
+		return;
+
+	if (lastLat != 360 || lastLon != 361) {
+		cumulativeDistance += calcDist(lat, lon, lastLat, lastLon);
+	}
+
+	lastLat = lat;
+	lastLon = lon;
+}
+
+void giveHapticFeedback() {
+	if (cumulativeDistance > SMALL_VIBRATE_THRESHOLD) {
+		int count = 0;
+		while (cumulativeDistance > SMALL_VIBRATE_THRESHOLD) {
+			cumulativeDistance -= SMALL_VIBRATE_THRESHOLD;
+			count++;
+		}
+		vibrateCount += count;
+		if (vibrateCount > LARGE_VIBRATE_COUNT) {
+			vibrateLong(2);
+			vibrateCount -= LARGE_VIBRATE_COUNT;
+		} else {
+			vibrateShort();
+		}
+	}
+}
+
+void loop() {
+	gps.readSerial();
+	gps.beginLogging();
+
+	int command = matchCommand();
+	String password;
+	switch (command) {
+		case 1: //Connect
+			gps.stopLogging();
+
 			//Parse password and check it against the real one
-			String password = command.substring(7);
+			password = Serial.readStringUntil('\n');
 			password.trim();
-			if (password != "") {
+			if (_password != "") {
 				if (password != _password) {
 					Serial.print("WRONGPASS\n");
 					return;
@@ -52,126 +231,50 @@ void loop() {
 			}
 			connected = true;
 			Serial.print("OK\n");
-		}
-	} else {
-		if (command == "RUNDATA") {
-			float lat, lon;
-			uint32_t timestamp;
-			gps.getData_Init();
-
-			while (gps.getData_Next(&lat, &lon, &timestamp)) {
-				Serial.print(timestamp);
-				Serial.print("=");
-				Serial.print(lat, 5);
-				Serial.print("|");
-				Serial.println(lon, 5);
-				Serial.print(",");
-			}
-
-			//Print our final newline.
-			Serial.println();
-		} else if (command == "CLEAR") {
-			Serial.print("OK\n");
-			gps.eraseFlash();
-		} else if (command == "CAPTURE") {
-			//This is a debug command, so that we can 'capture' live.
-			Serial.println("Starting data capture");
-
-			gps.beginLogging();
-
-			char *exitCommand = "STOP";
-			int i = 0;
-			Serial.println("Send 'STOP' to stop logging.");
-			uint32_t lastTime = millis();
-			while (exitCommand[i]) {
-				if (Serial.available()) {
-					if (Serial.read() == exitCommand[i])
-						i++;
-					else
-						i = 0;
-				}
-				//Serial.print(".");
-				gps.readSerial();
-
-				uint32_t thisTime = millis();
-				if (thisTime < lastTime)
-					continue;  //Oh well.
-				if (thisTime - lastTime > 2000) {
-					lastTime += 2000;
-
-					float lat, lon;
-					if (gps.getPosition(&lat, &lon)) {
-						Serial.print(lat, 6);
-						Serial.print("|");
-						Serial.print(lon, 6);
-						Serial.println();
-					}
-				}
-			}
-			Serial.println("Stopping data capture...");
+			break;
+		case 2: //Rundata
+			if (!connected) break;
+			processRundata();
+			break;
+		case 3: //Clear
+			if (!connected) break;
 			gps.stopLogging();
-			Serial.println("Stopped.");
-		}
+			gps.eraseFlash();
+			Serial.print("OK\n");
+			break;
+		case 4: //Capture
+			if (!connected) break;
+			processCapture();
+			break;
+		case 5: //OK
+			Serial.print("OK\n");
+			break;
+		case 6: //Vibrate
+			Serial.print("OK\n");
+			vibrateLong(10);
+			break;
+		default:
+			break;
 	}
-}
 
-// Checks the distance the device has travelled, cumulatively
-// adding each time it is updated. For every kilometre travelled,
-// the method will call vibrateLong with the number of kms travelled
-// used as the arguments. For each half-km travelled, vibrateShort 
-// is called.
-void check_distance(float lat, float lon) {
-	char latStr[16];
-	char lonStr[16];
-	int32_t latDeg; 
-	int32_t lonDeg;
-
-	// Get the lat and lon as a string
-	dtostrf(lat, 0, 5, latStr);
-	dtostrf(lon, 0, 5, lonStr);
-
-	//Serial.print(lat, 5);
-	//Serial.print(" | ");
-	//Serial.println(lon, 5);
-
-	// Convert lat and lon into degrees
-	dmsToDegrees(&latStr[0], &lonStr[0], &latDeg, &lonDeg);
-	lat = ((float)latDeg) / 10000000;
-	lat = ((float)lonDeg) / 10000000;
-
-	if (first_pos || sec_pos) {
-		// Initial coords obtained
-		prevLat = lat;
-		prevLon = lon;
-
-		if (!first_pos) sec_pos = false;
-		first_pos = false;
-	} else {
-		// New coordinates
-		float delLat = (lat - prevLat);
-		float delLon = (lon - prevLon);
-
-		// Calculate distance travelled
-		float dist = sqrt(pow(delLat, 2) + pow(delLon, 2));
-		int intDist = (int) (dist * DIST_SCALE);
-		distance += intDist;
-		//Serial.println("Distance travelled since last ping: " + String(intDist));
-
-		// Check total distance travelled
-		if (distance > 500) {
-			if (long_vib) {
-				vibrateLong(long_vib_cnt);
-				long_vib_cnt++;
-			} else {
-				vibrateShort();
-			}
-			distance -= 500;
-			long_vib = !long_vib;
+	uint32_t time = millis();
+	if (time - lastTime > 1000) {
+		float lat, lon;
+		if (gps.getPosition(&lat, &lon)) {
+			//Serial.println(cumulativeDistance);
+		} else {
+			//Serial.print("!");
 		}
 
-		// New coordinates are now old
-		prevLat = lat;
-		prevLon = lon;
+		updateDistance();
+		giveHapticFeedback();
+		lastTime = time - 1;
+	}
+
+	if (time - lastLogTime > 65000) {
+		lastLogTime -= 65000;
+		//gps.stopLogging();
+		//gps.beginLogging();
 	}
 }
 
@@ -185,6 +288,7 @@ void vibrateDelay(int ms) {
 // Vibrates the device for 1 second for each time 
 // of the given value.
 void vibrateLong(int vibNum) {
+	//Serial.println("VibrateLong");
 	for (int i = 0; i < vibNum; i++) {
 		digitalWrite(VIB_PIN, HIGH);
 		vibrateDelay(1000);
@@ -195,6 +299,7 @@ void vibrateLong(int vibNum) {
 
 // Vibrates the device for 0.5 seconds.
 void vibrateShort() {
+	//Serial.println("VibrateShort");
 	digitalWrite(VIB_PIN, HIGH);
 	vibrateDelay(500);
 	digitalWrite(VIB_PIN, LOW);

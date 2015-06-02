@@ -8,6 +8,7 @@
 class GPSInterface {
 public:
 	Adafruit_GPS GPS;
+	bool logging;
 
 public:
 
@@ -16,6 +17,8 @@ public:
 
 	void setup() {
 		GPS.begin(9600);
+
+		logging = false;
 
 		//Check firmware version
 		Serial1.println(PMTK_Q_RELEASE);
@@ -69,21 +72,28 @@ public:
 	}
 
 	void beginLogging() {
+		if (logging) return;
+
 		GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-		//For debugging only, this will be backed off later.
-		GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
+		GPS.sendCommand(PMTK_SET_NMEA_UPDATE_200_MILLIHERTZ);
 
 		GPS.sendCommand(PMTK_LOCUS_STARTLOG);
+
+		logging = true;
 	}
 
 	void stopLogging() {
+		if (!logging) return;
+
 		GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_OFF);
 
 		GPS.sendCommand(PMTK_LOCUS_STOPLOG);
+
+		logging = false;
 	}
 
 	//Called before data can be read from the GPS Log.
-	void getData_Init() {
+	bool getData_Init() {
 		GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_OFF);
 		
 		//Discard any buffered data.
@@ -93,19 +103,25 @@ public:
 
 		//TODO: Check if this is enough
 		delay(80);
-
 		GPS.sendCommand("$PMTK622,1*29");
 		delay(20);
+
+		uint32_t startTime = millis();
 
 		uint8_t index = 0;
 		char *str = "$PMTKLOX,1,0";
 		while (str[index] != 0) {
+			uint32_t time = millis();
+			if (time - startTime > 1000) {
+				return false; //Timeout
+			}
+
 			if (!Serial1.available()) {
-				//Serial.println("Nothing");
 				continue;
 			}
 
 			char c = Serial1.read();
+			//Serial.write(c);
 			if (c == str[index])
 				index++;
 			else {
@@ -113,6 +129,7 @@ public:
 				continue;
 			}
 		}
+		return true;
 	}
 
 	//Call after calling getData_Init. One Init call is needed before a group of Line calls.
