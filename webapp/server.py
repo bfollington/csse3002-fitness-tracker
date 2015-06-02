@@ -5,12 +5,16 @@ import cgi
 from bson.json_util import dumps
 import time
 from serial_conn import SerialConnector
+from serial_conn import FileSerialConnector
 import time
 import calendar
 from dateutil.parser import parse
 import run_stats
 
 import db
+
+debugMode = True
+debugFile = "demo_test.txt"
 
 class FTServer(SimpleHTTPRequestHandler):
 
@@ -21,7 +25,10 @@ class FTServer(SimpleHTTPRequestHandler):
 
     def __init__(self, request, client_address, server):
         self.db = db.RunDatabase()
-        self.serial = SerialConnector()
+        if debugMode:
+            self.serial = FileSerialConnector(debugFile)
+        else:
+            self.serial = SerialConnector()
 
         SimpleHTTPRequestHandler.__init__(self, request, client_address, server)
 

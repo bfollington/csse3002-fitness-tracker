@@ -7,9 +7,11 @@ class FileSerialConnector():
         self.serialConn = FileSerialIO(path)
         self.processor = DataProcessor()
 
-    def get_runs(self):
-        runDataStr = self.serialConn.read_all_runs()
+    '''Has password parameter to make the interface the same as SerialConnector'''
+    def get_runs(self, password=None):
+        runDataStr = self.serialConn.read_all_runs().strip()
         #Split runs based on a threshold of 500 seconds
+
         runs = self.processor.process_all_runs(runDataStr, 500)
         return runs
 
