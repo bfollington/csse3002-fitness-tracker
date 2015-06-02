@@ -7,9 +7,11 @@ class FileSerialConnector():
         self.serialConn = FileSerialIO(path)
         self.processor = DataProcessor()
 
-    def get_runs(self):
-        runDataStr = self.serialConn.read_all_runs()
+    '''Has password parameter to make the interface the same as SerialConnector'''
+    def get_runs(self, password=None):
+        runDataStr = self.serialConn.read_all_runs().strip()
         #Split runs based on a threshold of 500 seconds
+
         runs = self.processor.process_all_runs(runDataStr, 500)
         return runs
 
@@ -27,7 +29,8 @@ class SerialConnector():
         if not self.serialConn.connect_flora(password):
             print "Could not connect to device?"
             return None
-        runDataStr = self.serialConn.read_all_runs()
+        runDataStr = self.serialConn.read_all_runs().strip()
+        
         #Split runs based on a threshold of 500 seconds
         runs = self.processor.process_all_runs(runDataStr, 500)
         self.serialConn.close()
@@ -40,7 +43,11 @@ class DataProcessor():
     '''
     def process_all_runs(self, runDataStr, threshold):
         runData = self.parse_rundata(runDataStr)
-        runs = self.split_runs(runData, threshold)
+        
+        if len(runData):
+            runs = self.split_runs(runData, threshold)
+        else:
+            runs = []
 
         for i in range(0, len(runs)):
             #5 point average = side length of 2
@@ -57,9 +64,8 @@ class DataProcessor():
 
         #Convert to list of tuples
         runData = []
-
+        print "parse_rundata:"
         for dataPoint in runDataArr:
-            print dataPoint
             timeLocSplit = dataPoint.split("=")
             timestamp = int(timeLocSplit[0])
             loc = timeLocSplit[1].split("|")
@@ -68,6 +74,7 @@ class DataProcessor():
 
             if timestamp != 0 and lat != 0 and lon != 0:
                 runData.append((timestamp, lat, lon))
+                print dataPoint
 
         return runData
 
@@ -231,15 +238,17 @@ class SerialIO():
         #Query for run data
         self.s.write("RUNDATA\n")
         runData = self.s.readline().strip()
-
+        self.s.write("CLEAR\n");
+        self.s.readline()
         print runData
+        
 
         #Just return what we got from the Flora directly
         return runData
 
     '''
     Reads the data from the most recent run from the serial connection.
-    TODO: Not used right now as it isn't implemented on the Flora. Use read_all_data instead.
+    Note: Not used right now as it isn't implemented on the Flora. Use read_all_data instead.
     '''
     def read_last_run(self):
         if not self.connected:

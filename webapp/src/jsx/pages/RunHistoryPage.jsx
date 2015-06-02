@@ -76,7 +76,7 @@ export class RunHistoryPage extends React.Component {
                                                         <td>{window.app.moment(run.start_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.start_time * 1000).format(window.app.dayFormat)}</td>
                                                         <td>{window.app.moment(run.end_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.end_time * 1000).format(window.app.dayFormat)}</td>
                                                         <td>
-                                                            <a className="btn btn-default" href={"/run/" + run._id["$oid"]}>View</a> <button className="btn btn-default" onClick={this.deleteRun.bind(this, run)}>Delete</button>
+                                                            <a className="btn btn-default" href={"/run/" + run._id["$oid"]}><i className="ion ion-eye" /></a> <button className="btn btn-default" onClick={this.deleteRun.bind(this, run)}><i className="ion ion-trash-b" /></button>
                                                         </td>
                                                     </tr>
                                                 );

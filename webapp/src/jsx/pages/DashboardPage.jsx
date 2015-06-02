@@ -240,7 +240,7 @@ export class DashboardPage extends React.Component {
                                                     <tr>
                                                         <td>{window.app.moment(run.start_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.start_time * 1000).format(window.app.dayFormat)}</td>
                                                         <td>{window.app.moment(run.end_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.end_time * 1000).format(window.app.dayFormat)}</td>
-                                                        <td><a className="btn btn-default" href={"/run/" + run._id}>View</a></td>
+                                                        <td><a className="btn btn-default" href={"/run/" + run._id}><i className="ion ion-eye" /></a></td>
                                                     </tr>
                                                 );
                                             }) : ""
