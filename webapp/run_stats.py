@@ -9,7 +9,7 @@ null = None
 def mps_to_mets(mps):
     mets = (0.2032 * pow(mps, 3)) - (2.1463 * mps * mps) + (10.12 * mps) - 5.9764
     if mets < 6:
-        mets = 6
+        mets = 6.0
     return mets
 
 '''
