@@ -61,6 +61,8 @@ void setup() {
 	}
 
 	gps.setup();
+
+	vibrateDelay(3000);
 }
 
 int matchCommand() {
