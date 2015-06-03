@@ -1,8 +1,12 @@
+/*
+ * A modal object which is responsible for viewing and upateing the settings.
+ */
 export class AppSettingsModal extends React.Component {
 
     constructor(props) {
         super.constructor(props);
 
+        /* Set the default state. */
         this.state = {
             saveSettingsInProgress: false,
             weight: 0,
@@ -13,13 +17,16 @@ export class AppSettingsModal extends React.Component {
     }
 
     componentDidMount() {
-
+        /* Bind the shown function to the modal shown event. */
         $(React.findDOMNode(this)).on("shown.bs.modal", this.shown.bind(this));
     }
 
+    /*
+     * When the modal is shown, retrieve the current settings from the server
+     * and populate the form appropriately.
+     */
     shown(e) {
         $.get("/api/settings", function(result) {
-
             if (result.success != false) {
                 console.log(result);
 
@@ -30,14 +37,18 @@ export class AppSettingsModal extends React.Component {
                     age: result.age
                 });
             }
-
         }.bind(this));
     }
 
+    /*
+     * Handles the saving of the form values to the server.
+     */
     beginSaveSettings() {
 
+        /* Indicate that the save has begun, to hide the save button. */
         this.setState({saveSettingsInProgress: true});
 
+        /* Construct the request from the form values. */
         var params = {
             weight: this.state.weight,
             height: this.state.height,
@@ -45,36 +56,52 @@ export class AppSettingsModal extends React.Component {
             gender: this.state.gender
         };
 
+        /*
+         * Post the values to the server to update the settings, and hide
+         * the modal.
+         */
         $.post("/api/update_settings", params, function(result) {
-            console.log(result);
-
             this.setState({saveSettingsInProgress: false});
 
             $(React.findDOMNode(this)).modal("hide");
-
         }.bind(this));
     }
 
-    // kg
+    /*
+     * Update the stored weight in response to the field udpating.
+     * Weight is stored in kiograms.
+     */
     weightChanged(e) {
         this.setState({weight: parseInt(e.target.value)});
     }
 
-    // cm
+    /*
+     * Update the stored height in response to the field udpating.
+     * Height is stored in centimeters.
+     */
     heightChanged(e) {
         this.setState({height: parseInt(e.target.value)});
     }
 
-    // string
+    /*
+     * Update the stored gender in response to the field udpating.
+     * Gender is stored as a string: 'male', 'female' or 'other'..
+     */
     genderChanged(e) {
         this.setState({gender: e.target.value});
     }
 
-    // years
+    /*
+     * Update the stored age in response to the field udpating.
+     * Height is stored in years.
+     */
     ageChanged(e) {
         this.setState({age: parseInt(e.target.value)});
     }
 
+    /*
+     * Construct the form to be displayed in the modal, given the parameters.
+     */
     getForm() {
         return (
             <div className="form-group">
@@ -100,6 +127,7 @@ export class AppSettingsModal extends React.Component {
 
     render() {
 
+        /* Construct the content of the modal. */
         var beforeImportBody = [
             <p>Please configure the application settings, this information is used to calculate the kilojoules you burn on each run.</p>,
             this.getForm()
