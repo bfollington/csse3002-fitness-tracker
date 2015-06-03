@@ -29,6 +29,6 @@ Any libraries should be placed in the `/dist` folder, within the relevant subfol
 
 ### Starting the Application
 
-Mongodb must be running to use the application, type `mongod` will start the database service.
+Mongodb must be running to use the application, type `mongod` will start the database service. Before running the application for the first time, `python db.py` must be run to seed the database with initial data.
 
 To boot up the python server, simply run `python server.py` and the application will bind to port 8080. You can access the application by navigating to `localhost:8080`, `127.0.0.1:8080` or whatever other v-host you have set up.
