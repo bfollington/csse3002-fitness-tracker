@@ -13,8 +13,8 @@ import run_stats
 
 import db
 
-debugMode = True
-debugFile = "samples/jamie_sample.txt"
+debugMode = False
+debugFile = "samples/demo_ben_and_max_house.txt"
 
 class FTServer(SimpleHTTPRequestHandler):
 
