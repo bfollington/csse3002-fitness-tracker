@@ -6,19 +6,25 @@ import {PieChart} from "components/PieChart.jsx";
 import {MainNavbar} from "components/MainNavbar.jsx";
 import {ModalTrigger} from "components/ModalTrigger.jsx";
 import {ImportDataModal} from "components/ImportDataModal.jsx";
-import {FacebookShareButton, TwitterShareButton} from "components/SocialSharing.jsx";
+import {FacebookShareButton, TwitterShareButton} from
+        "components/SocialSharing.jsx";
 import {UploadDataButton} from "components/UploadDataButton.jsx";
 
+/*
+ * Renders the main dashboard for the application.
+ */
 export class DashboardPage extends React.Component {
     constructor() {
+        /* Initialise the state of the page. */
         this.state = {
             runs: null,
+            /* Graph to show the average speed each day of the last week. */
             speedGraph: {
                 data: {
                     labels: [],
                     datasets: [
                         {
-                            label: "My Second dataset",
+                            label: "Speed",
                             fillColor: "rgba(151,187,205,0.2)",
                             strokeColor: "rgba(151,187,205,1)",
                             pointColor: "rgba(151,187,205,1)",
@@ -29,18 +35,20 @@ export class DashboardPage extends React.Component {
                         }
                     ]
                 },
+                /* Show the units of km/h for data points. */
                 opts: {
                     scaleLabel: function( val ) {
                         return val.value + " km/h"
                     }
                 }
             },
+            /* Graph to show the total distance run each day of the last week. */
             distanceGraph: {
                 data: {
                     labels: [],
                     datasets: [
                         {
-                            label: "My Second dataset",
+                            label: "Distance",
                             fillColor: "rgba(151,187,205,0.2)",
                             strokeColor: "rgba(151,187,205,1)",
                             pointColor: "rgba(151,187,205,1)",
@@ -51,6 +59,7 @@ export class DashboardPage extends React.Component {
                         }
                     ]
                 },
+                /* Show the units of m for data points. */
                 opts: {
                     scaleLabel: function( val ) {
                         return val.value + " m"
@@ -61,30 +70,45 @@ export class DashboardPage extends React.Component {
     }
 
     componentDidMount() {
+        /* Request all runs in the last week from the server. */
         var date = (new Date());
         date.setDate(date.getDate() - 7);
         date = date.toISOString().substring(0, 10);
 
         $.get("/api/runs_since_date/" + date, function(result) {
             if (result.success != false) {
+                /*
+                 * Take a local copy of the speed and distance graphs to
+                 * modify and return to the props.
+                 */
                 var speedGraph = this.state.speedGraph;
                 var distanceGraph = this.state.distanceGraph;
 
+                /* Update the number of runs stored. */
                 this.setState({
                     runs: result.runs
                 });
 
+                /* Reset the data stored in both graphs. */
                 speedGraph.data.labels = [];
                 speedGraph.data.datasets[0].data = [];
                 distanceGraph.data.labels = [];
                 distanceGraph.data.datasets[0].data = [];
 
+                /* Reset the data to display on both graphs. */
                 let counts = [0,0,0,0,0,0,0];
                 let speeds = [0,0,0,0,0,0,0];
                 let distances = [0,0,0,0,0,0,0];
 
-                let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                /* Helper array used to generate axis labels. */
+                let weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday",
+                        "Thursday", "Friday", "Saturday"];
 
+                /*
+                 * Iterate through the runs returned, adding the data to the
+                 * speeds and distances arrays for the correct day of the week.
+                 * Also increments the count, to be used for averages.
+                 */
                 for (var i = 0; i < result.runs.length; i++) {
                     let run = result.runs[i];
                     let moment = window.app.moment( run.start_time * 1000 );
@@ -95,28 +119,43 @@ export class DashboardPage extends React.Component {
                     distances[day] += run.distance;
                 }
 
+                /* Record the current day of the week, from 0 to 6. */
                 let currentDay = window.app.moment().weekday();
 
+                /* For each day, add a data point to the graph. */
                 for (var i = 0; i < 7; i++) {
+                    /*
+                     * Add in the current offset to display the current day as
+                     * the rightmost data point.
+                     */
                     let day = (currentDay + i + 1) % 7;
-                    let run = result.runs[day];
+
+                    /* Add the label to the speed graph. */
                     speedGraph.data.labels.push(weekdays[day]);
+                    /* Determine the average speed for that day. */
                     let speed = 0;
                     if ( counts[day] > 0 ) {
                         speed = (speeds[day] / counts[day]) * 60 * 60 / 1000;
                     }
+                    /* Round to two decimal places. */
                     speed = speed.toFixed(2);
+                    /* Push the average speed to the speed graph dataset. */
                     speedGraph.data.datasets[0].data.push(speed);
 
+                    /* Add the label to the distance graph. */
                     distanceGraph.data.labels.push(weekdays[day]);
+                    /* Determine the total distance for that day. */
                     let distance = 0;
                     if ( counts[day] > 0 ) {
                         distance = distances[day];
                     }
+                    /* Round to two decimal places. */
                     distance = distance.toFixed(2);
+                    /* Push the total distance to the distance graph dataset. */
                     distanceGraph.data.datasets[0].data.push(distance);
                 }
 
+                /* Update the state with the generated graphs. */
                 this.setState({
                     speedGraph: speedGraph,
                     distanceGraph: distanceGraph,
@@ -127,76 +166,12 @@ export class DashboardPage extends React.Component {
 
     render() {
 
-        var pieChartData =  [
-            {
-                value: 300,
-                color:"#F7464A",
-                highlight: "#FF5A5E",
-                label: "Red"
-            },
-            {
-                value: 50,
-                color: "#46BFBD",
-                highlight: "#5AD3D1",
-                label: "Green"
-            },
-            {
-                value: 100,
-                color: "#FDB45C",
-                highlight: "#FFC870",
-                label: "Yellow"
-            }
-        ];
-
-        var barChartdata = {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
-            datasets: [
-                {
-                    label: "My First dataset",
-                    fillColor: "rgba(220,220,220,0.5)",
-                    strokeColor: "rgba(220,220,220,0.8)",
-                    highlightFill: "rgba(220,220,220,0.75)",
-                    highlightStroke: "rgba(220,220,220,1)",
-                    data: [65, 59, 80, 81, 56, 55, 40]
-                },
-                {
-                    label: "My Second dataset",
-                    fillColor: "rgba(151,187,205,0.5)",
-                    strokeColor: "rgba(151,187,205,0.8)",
-                    highlightFill: "rgba(151,187,205,0.75)",
-                    highlightStroke: "rgba(151,187,205,1)",
-                    data: [28, 48, 40, 19, 86, 27, 90]
-                }
-            ]
-        };
-
-        var radarChartData = {
-            labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
-            datasets: [
-                {
-                    label: "My First dataset",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
-                    data: [65, 59, 90, 81, 56, 55, 40]
-                },
-                {
-                    label: "My Second dataset",
-                    fillColor: "rgba(151,187,205,0.2)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(151,187,205,1)",
-                    data: [28, 48, 40, 19, 96, 27, 100]
-                }
-            ]
-        };
-
         var content = null;
+
+        /*
+         * Show a special alert prompting the user to import a run if there
+         * are no runs stored in the database.
+         */
 
         if (!this.state.runs || this.state.runs.length == 0) {
             content = (
@@ -213,6 +188,9 @@ export class DashboardPage extends React.Component {
             );
         }
 
+        /*
+         * Render the main content of the dashboard page.
+         */
         return (
             <div>
                 <MainNavbar />
@@ -232,6 +210,7 @@ export class DashboardPage extends React.Component {
                                 <tbody>
 
                                     {
+                                        /* Display each run in the last week as a row of the table. */
                                         this.state.runs ?
                                             this.state.runs.map( function(run) {
                                                 return (

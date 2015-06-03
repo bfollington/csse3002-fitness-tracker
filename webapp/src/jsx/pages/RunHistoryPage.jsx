@@ -9,15 +9,20 @@ import {ImportDataModal} from "components/ImportDataModal.jsx";
 
 export class RunHistoryPage extends React.Component {
     constructor() {
+        /* Reset the run state. */
         this.state = {
             runs: null
         }
     }
 
     componentDidMount() {
+        /* Fetch the run data from the server on mount. */
         this.updateRuns();
     }
 
+    /*
+     * Get all existing runs from the server, and add them to the state.
+     */
     updateRuns() {
         $.get("/api/all_runs", function(result) {
             if (result.success != false) {
@@ -28,29 +33,31 @@ export class RunHistoryPage extends React.Component {
         }.bind(this));
     }
 
+    /*
+     * Callback to delete a specified run from the server.
+     * Accepts a run object.
+     */
     deleteRun(run, e) {
-        // this is bound to the run instance
-
+        /*
+         * Ask the user for confirmation to delete the run.
+         */
         if (confirm("Are you sure you want to delete this run?")) {
-            console.log(run);
-
+            /* If the user confirms, send the request to the server. */
             $.get("/api/delete_run/" + run._id["$oid"], function(result) {
-
                 if (result.success != false) {
-
+                    /* If successful, update the runs listing. */
                     this.updateRuns();
-
                 } else {
                     console.error("Could not delete run.");
                 }
             }.bind(this));
         } else {
-
+            /* Pass if the user declines. */
         }
     }
 
     render() {
-
+        /* Render the existing runs in a body table. */
         return (
             <div>
                 <MainNavbar />
@@ -69,6 +76,7 @@ export class RunHistoryPage extends React.Component {
                                 <tbody>
 
                                     {
+                                        /* Display each of the runs in a row of the table. */
                                         this.state.runs ?
                                             this.state.runs.map( function(run) {
                                                 return (
