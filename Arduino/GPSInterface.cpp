@@ -81,7 +81,7 @@ bool GPSInterface::getData_Init() {
 	//We need to give the GPS time to update.
 	//Lowever values or no delays can cause the GPS to become 'confused'
 	//and, in some cases, either hang or simply not 'see' the command.
-	delay(80);
+	delay(100);
 	GPS.sendCommand("$PMTK622,1*29");
 
 	uint32_t startTime = millis();

@@ -37,10 +37,10 @@ float cumulativeDistance = 0.0f;
 float lastLat = 360, lastLon = 361;
 
 //The cumulative distance between small vibrations.
-#define SMALL_VIBRATE_THRESHOLD	100.0f
+#define SMALL_VIBRATE_THRESHOLD	500.0f
 
 //The number of small vibrations that will be equal to a large vibration.
-#define LARGE_VIBRATE_COUNT 5
+#define LARGE_VIBRATE_COUNT 2
 
 //The number of commands in the list below
 #define COMMAND_COUNT 6
@@ -133,6 +133,7 @@ int matchCommand() {
 //Processes a 'RUNDATA' command.
 void processRundata() {
 	gps.stopLogging();
+	vibrateDelay(100);
 
 	float lat, lon;
 	uint32_t timestamp;
@@ -245,7 +246,7 @@ void giveHapticFeedback() {
 		}
 		vibrateCount += count;
 		if (vibrateCount > LARGE_VIBRATE_COUNT) {
-			vibrateLong(2);
+			vibrateLong(2); //Vibrate twice
 			vibrateCount -= LARGE_VIBRATE_COUNT;
 		} else {
 			vibrateShort();
