@@ -1,7 +1,7 @@
 export class Map extends React.Component {
     constructor() {
 
-        this.defaultOptsString = "size=600x300&maptype=roadmap";
+        this.defaultOptsString = "size=1168x480&maptype=roadmap";
     }
 
     getStaticUrl() {
@@ -59,7 +59,7 @@ export class Map extends React.Component {
             var dx = parseFloat(waypoints[i].lat) - parseFloat(waypoints[i + 1].lat);
             var dy = parseFloat(waypoints[i].lon) - parseFloat(waypoints[i + 1].lon);
             var dist = Math.sqrt(dx * dx  + dy * dy) * 1000;
-            dist *= 500;
+            dist *= 600;
             if ( dist > 230 ) {
                 dist = 230;
             }
@@ -78,7 +78,7 @@ export class Map extends React.Component {
                 geodesic: true,
                 strokeColor: 'rgba(' + r + ', ' + g + ', ' + b + ', 1)',
                 strokeOpacity: 1.0,
-                strokeWeight: 2
+                strokeWeight: 3
             });
 
             runPathPolyLine.setMap(map);
