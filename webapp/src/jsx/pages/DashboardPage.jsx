@@ -64,12 +64,9 @@ export class DashboardPage extends React.Component {
         var date = (new Date());
         date.setDate(date.getDate() - 7);
         date = date.toISOString().substring(0, 10);
-        console.log(date);
 
         $.get("/api/runs_since_date/" + date, function(result) {
             if (result.success != false) {
-
-                console.log(result);
                 var speedGraph = this.state.speedGraph;
                 var distanceGraph = this.state.distanceGraph;
 
@@ -98,22 +95,23 @@ export class DashboardPage extends React.Component {
                     distances[day] += run.distance;
                 }
 
+                let currentDay = window.app.moment().weekday();
 
                 for (var i = 0; i < 7; i++) {
-
-                    let run = result.runs[i];
-                    speedGraph.data.labels.push(weekdays[i]);
+                    let day = (currentDay + i + 1) % 7;
+                    let run = result.runs[day];
+                    speedGraph.data.labels.push(weekdays[day]);
                     let speed = 0;
-                    if ( counts[i] > 0 ) {
-                        speed = (speeds[i] / counts[i]) * 60 * 60 / 1000;
+                    if ( counts[day] > 0 ) {
+                        speed = (speeds[day] / counts[day]) * 60 * 60 / 1000;
                     }
                     speed = speed.toFixed(2);
                     speedGraph.data.datasets[0].data.push(speed);
 
-                    distanceGraph.data.labels.push(weekdays[i]);
+                    distanceGraph.data.labels.push(weekdays[day]);
                     let distance = 0;
-                    if ( counts[i] > 0 ) {
-                        distance = distances[i];
+                    if ( counts[day] > 0 ) {
+                        distance = distances[day];
                     }
                     distance = distance.toFixed(2);
                     distanceGraph.data.datasets[0].data.push(distance);

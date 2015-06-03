@@ -14,7 +14,7 @@ import run_stats
 import db
 
 debugMode = True
-debugFile = "demo_max_and_ben_house.txt"
+debugFile = "samples/demo_max_and_ben_house.txt"
 
 class FTServer(SimpleHTTPRequestHandler):
 
