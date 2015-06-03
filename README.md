@@ -11,6 +11,10 @@ This repository contains two sub-projects:
 
 The application is front-end heavy, and is build using [React.js](https://facebook.github.io/react/), [ES6 (via babel)](https://babeljs.io/), [SCSS](http://sass-lang.com/) and [Jade](http://jade-lang.com/). All the UI components are defined as React components within `/src/jsx`.
 
+### Database
+
+The application uses [MongoDB](https://www.mongodb.org/) for persistence, and the database must be running to use the application. Additionally, [pymongo](http://api.mongodb.org/python/current/) is required for interfacing with MongoDB.
+
 ### Development Process
 
 The development of the app relies on `gulp` as the build system. To get everything up and running, first make sure you're in the `/webapp` folder and that you have `npm` installed (see: [node.js](https://nodejs.org/)).
@@ -24,5 +28,7 @@ From here, you should be able to run `gulp build` in the root to compile all JSX
 Any libraries should be placed in the `/dist` folder, within the relevant subfolder and then in a subfolder named `/lib`. E.g. for jQuery, we place `jQuery.js` in `/dist/js/lib/jQuery.js`.
 
 ### Starting the Application
+
+Mongodb must be running to use the application, type `mongod` will start the database service.
 
 To boot up the python server, simply run `python server.py` and the application will bind to port 8080. You can access the application by navigating to `localhost:8080`, `127.0.0.1:8080` or whatever other v-host you have set up.
