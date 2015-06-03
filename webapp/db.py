@@ -293,27 +293,18 @@ def demo_insert( db, path ):
         # Save the run.
         db.push_run(run)
 
-# Simple test which clears the database, then runs basic tests
-if ( __name__ == "__main__" ):
-    # Create a test database
-    db = RunDatabase()
-
+def run_tests( db ):
+    """
+    Clear the database, then run basic tests for each of the key methods.
+    Leaves the demo files in the database so that they can be tested on the
+    front end.
+    """
     # Clear the runs database, if it exists
     db.clear_runs()
 
-
-    db.set_settings({
-        "height": 180,
-        "weight": 70,
-        "age": 19,
-        "gender": "male"
-    })
-    print db.get_settings()
-
-
     # Insert some dummy data
-    demo_insert( db, "demo_insert.txt" )
-    demo_insert( db, "second_insert.txt" )
+    demo_insert( db, "samples/demo_insert.txt" )
+    demo_insert( db, "samples/second_insert.txt" )
 
     # Retrieve the latest run, and print it as a dict
     print "Testing get_latest_run"
@@ -332,4 +323,19 @@ if ( __name__ == "__main__" ):
     print "Testing get_waypoints_for"
     # Print them as dicts, not waypoint objects
     print [ wp.to_dict() for wp in db.get_waypoints_for( last_run_id ) ]
+
+# If run directly, initialise the database with default settings.
+if ( __name__ == "__main__" ):
+    # Create a test database
+    db = RunDatabase()
+
+    db.set_settings({
+        "height": 180,
+        "weight": 70,
+        "age": 19,
+        "gender": "male"
+    })
+    print "Settings initialised."
+    print db.get_settings()
+
 
