@@ -21,9 +21,6 @@
     <ClInclude Include="Tests.h">
       <Filter>Framework Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\GPSInterface.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\GPSConverter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -38,8 +35,5 @@
     <ClCompile Include="..\GPSConverter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="flora_log_output" />
   </ItemGroup>
 </Project>
