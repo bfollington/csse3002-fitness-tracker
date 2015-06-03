@@ -1,4 +1,5 @@
 import serial
+import time
 from serial.tools import list_ports
 
 '''
@@ -13,6 +14,7 @@ class FileSerialConnector():
     '''Note: Has password parameter to make the interface the same as SerialConnector'''
     def get_runs(self, password=None):
         runDataStr = self.serialConn.read_all_runs().strip()
+        time.sleep(2)
         #Split runs based on a threshold of 500 seconds
 
         runs = self.processor.process_all_runs(runDataStr, 500)
@@ -27,7 +29,7 @@ class SerialConnector():
         self.processor = DataProcessor()
 
     '''
-    Reads all the available run data from the Flora. 
+    Reads all the available run data from the Flora.
     Returns a list of runs, which consist of a list of tuples representing (timestamp, lat, long)
     Each run is post processed with smoothing, etc.
     '''
@@ -36,7 +38,7 @@ class SerialConnector():
             print "Could not connect to device?"
             return None
         runDataStr = self.serialConn.read_all_runs().strip()
-        
+
         #Split runs based on a threshold of 500 seconds
         runs = self.processor.process_all_runs(runDataStr, 500)
         self.serialConn.close()
@@ -49,7 +51,7 @@ class DataProcessor():
     '''
     def process_all_runs(self, runDataStr, threshold):
         runData = self.parse_rundata(runDataStr)
-        
+
         if len(runData):
             runs = self.split_runs(runData, threshold)
         else:
@@ -148,7 +150,7 @@ class DataProcessor():
 
 '''
 Class that acts as a serial reader for a rundata file on disk
-'''        
+'''
 class FileSerialIO():
     def __init__(self, filepath):
         self.filepath = filepath
@@ -250,7 +252,7 @@ class SerialIO():
         self.s.write("CLEAR\n");
         self.s.readline()
         print runData
-        
+
 
         #Just return what we got from the Flora directly
         return runData
