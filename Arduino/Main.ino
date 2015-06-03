@@ -14,7 +14,7 @@ int serialGetC() {
 }
 
 GPSInterface gps;
-String _password = "magicunicorn";
+String _password = "csse3002";
 
 bool connected = false;
 uint32_t lastTime; //For haptic notifications
