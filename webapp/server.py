@@ -60,6 +60,11 @@ class FTServer(SimpleHTTPRequestHandler):
 
         return SimpleHTTPRequestHandler.translate_path(self, path)
 
+
+    """
+    All GET requests for static resources are handled by
+    SimpleHTTPRequestHandler.
+    """
     def do_GET(self):
         """
         Handle all GET requests. All non-api requests are passed through to the
@@ -69,22 +74,27 @@ class FTServer(SimpleHTTPRequestHandler):
         if self.path.startswith("/api"):
             self._set_headers("application/json")
 
-
+            # get the last run imported
             if self.path.startswith("/api/latest_run"):
                 return self.api_latest_run_request()
 
+            # retrieve a list of all runs
             if self.path.startswith("/api/all_runs"):
                 return self.api_all_runs_request()
 
+            # retrieve runs that have happened since a particular date
             if self.path.startswith("/api/runs_since_date"):
                 return self.api_get_runs_since_date_request()
 
+            # get a specific run
             if self.path.startswith("/api/run"):
                 return self.api_run_request()
 
+            # delete a run
             if self.path.startswith("/api/delete_run"):
                 return self.api_delete_run_request()
 
+            # read the current settings
             if self.path.startswith("/api/settings"):
                 return self.api_settings_request()
 
@@ -93,6 +103,9 @@ class FTServer(SimpleHTTPRequestHandler):
         return SimpleHTTPRequestHandler.do_GET(self)
 
     def api_run_request(self):
+        """
+        API Method: retrieve a specific run by its database ID.
+        """
 
         run_id = self.path.replace("/api/run/", "")
         run = self.db.get_run_with_waypoints(run_id)
@@ -104,6 +117,9 @@ class FTServer(SimpleHTTPRequestHandler):
         self.wfile.close()
 
     def api_delete_run_request(self):
+        """
+        API Method: delete a specific run using its database ID
+        """
 
         run_id = self.path.replace("/api/delete_run/", "")
         success = True
@@ -121,9 +137,12 @@ class FTServer(SimpleHTTPRequestHandler):
         self.wfile.close()
 
     def api_get_runs_since_date_request(self):
+        """
+        API Method: Retrieve runs since a given date, date parameter is expected
+        to be in the form YYYY-MM-DD
+        """
 
         date = self.path.replace("/api/runs_since_date/", "")
-        print "Date: {}".format(calendar.timegm(time.strptime(date, '%Y-%m-%d')))
         success = True
 
         try:
@@ -142,6 +161,9 @@ class FTServer(SimpleHTTPRequestHandler):
         self.wfile.close()
 
     def api_latest_run_request(self):
+        """
+        API Method: Retrieve the last imported run
+        """
 
         run = self.db.get_latest_run()
 
@@ -153,6 +175,10 @@ class FTServer(SimpleHTTPRequestHandler):
         self.wfile.close()
 
     def api_all_runs_request(self):
+        """
+        API Method: Retrieve all runs ever imported. Typically used to cache
+        data on the front end.
+        """
 
         runs = self.db.get_run_list()
 
@@ -164,6 +190,9 @@ class FTServer(SimpleHTTPRequestHandler):
         self.wfile.close()
 
     def api_settings_request(self):
+        """
+        API Method: Retrieve current application settings
+        """
 
         settings = self.db.get_settings()
 
@@ -186,17 +215,13 @@ class FTServer(SimpleHTTPRequestHandler):
             path=(format % args))
 
 
-    """
-    All GET requests for static resources are handled by
-    SimpleHTTPRequestHandler.
-    """
-
     def do_POST(self):
         """
         Custom handler for POST requests. Parses the request and then serves
         it based on the path requested.
         """
 
+        # Cache content type for future use
         if self.headers.get('Content-Type'):
             content_type = self.headers['Content-Type']
         else:
@@ -249,17 +274,20 @@ class FTServer(SimpleHTTPRequestHandler):
 
         if (self.path == "/api/import_data"):
             """
-            Import data from a connected run tracker. If no device is connected, then
-            return an error.
+            API Method: Import data from a connected run tracker.
+            If no device is connected, then return an error.
             """
 
             password = False
             if form.has_key( "password" ):
                 password = form["password"].value
 
+            # authenticate with the device using the passed password
             run_data = self.serial.get_runs(password)
             if run_data != None:
                 resp = dumps({"success": True})
+
+                # read current settings
                 user_settings = self.db.get_settings()
                 height = user_settings['height']
                 weight = user_settings['weight']
@@ -273,6 +301,8 @@ class FTServer(SimpleHTTPRequestHandler):
                         waypoints.append(db.Waypoint(point[0], point[1], point[2]))
 
                     dbrun = db.Run(waypoints)
+
+                    # calculate stats using settings
                     stats = run_stats.calc_statistics(waypoints, height, weight, age, gender)
                     dbrun.set_statistics(stats)
                     self.db.push_run(dbrun)
@@ -283,6 +313,10 @@ class FTServer(SimpleHTTPRequestHandler):
             return
 
         if (self.path == "/api/update_settings"):
+            """
+            API Method: Update settings based on user input. Changes the
+            stored gender, height, weight and age.
+            """
 
             new_settings = {}
             for setting in ["gender", "height", "weight", "age"]:
