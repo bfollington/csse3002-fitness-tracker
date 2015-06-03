@@ -1,13 +1,16 @@
 import serial
 from serial.tools import list_ports
 
-
+'''
+To read run data from a file (for debugging)
+'''
 class FileSerialConnector():
+	'''Takes a filepath to read the data from'''
     def __init__(self, path):
         self.serialConn = FileSerialIO(path)
         self.processor = DataProcessor()
 
-    '''Has password parameter to make the interface the same as SerialConnector'''
+    '''Note: Has password parameter to make the interface the same as SerialConnector'''
     def get_runs(self, password=None):
         runDataStr = self.serialConn.read_all_runs().strip()
         #Split runs based on a threshold of 500 seconds
@@ -15,13 +18,16 @@ class FileSerialConnector():
         runs = self.processor.process_all_runs(runDataStr, 500)
         return runs
 
+'''
+Reads run data from a serial port
+'''
 class SerialConnector():
     def __init__(self):
         self.serialConn = SerialIO()
         self.processor = DataProcessor()
 
     '''
-    Reads all the available run data from the Flora.
+    Reads all the available run data from the Flora. 
     Returns a list of runs, which consist of a list of tuples representing (timestamp, lat, long)
     Each run is post processed with smoothing, etc.
     '''
@@ -140,6 +146,9 @@ class DataProcessor():
 
         return smoothed
 
+'''
+Class that acts as a serial reader for a rundata file on disk
+'''		
 class FileSerialIO():
     def __init__(self, filepath):
         self.filepath = filepath
@@ -245,32 +254,6 @@ class SerialIO():
 
         #Just return what we got from the Flora directly
         return runData
-
-    '''
-    Reads the data from the most recent run from the serial connection.
-    Note: Not used right now as it isn't implemented on the Flora. Use read_all_data instead.
-    '''
-    def read_last_run(self):
-        if not self.connected:
-            return None
-
-        #Count runs
-        self.s.write("COUNTRUNS\n")
-        runCount = int(self.s.readline().strip())
-
-        #Get last run
-        self.s.write("RUNDATA " + str(runCount - 1) + "\n")
-        runDataStr = self.s.readline().strip()
-        runData = runDataStr.split(",")[:-1]
-
-        return runData
-
-    '''
-    Sends a command to the device.
-    '''
-    def send_command(self, command_str):
-        #Commands will be expanded to include passwords, etc in a future sprint. Only basic GPS data access is available in this sprint, through read_last_run()
-        pass
 
     '''
     Closes the serial connection.
