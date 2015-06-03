@@ -60,5 +60,4 @@ void Test::run() {
 
 int main(int argc, const char **argv) {
 	Tests::Run();
-	Sleep(100000);
 }
