@@ -292,6 +292,7 @@ bool log_getData(uint8_t *runNumber, LocusEntry *entry) {
 		//because it often has a 'valid' checksum while presenting meaningless
 		//data.
 		bool invalid = (entry->fix == 0xFF && entry->checksum == 0xFF);
+		invalid |= (entry->time < 1433300000 || entry->time > 2000000000);
 		if (!log_getLocusEntry(locus, entry) || invalid) {
 			continue;
 		}
