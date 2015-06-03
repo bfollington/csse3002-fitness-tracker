@@ -5,7 +5,7 @@ from serial.tools import list_ports
 To read run data from a file (for debugging)
 '''
 class FileSerialConnector():
-	'''Takes a filepath to read the data from'''
+    '''Takes a filepath to read the data from'''
     def __init__(self, path):
         self.serialConn = FileSerialIO(path)
         self.processor = DataProcessor()
@@ -148,7 +148,7 @@ class DataProcessor():
 
 '''
 Class that acts as a serial reader for a rundata file on disk
-'''		
+'''        
 class FileSerialIO():
     def __init__(self, filepath):
         self.filepath = filepath
