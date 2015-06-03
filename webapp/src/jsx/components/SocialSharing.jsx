@@ -1,3 +1,8 @@
+/**
+ * Social sharing buttons that automatically trigger API requests
+ * using the provided URL and message.
+ */
+
 
 /*
  * Example
@@ -9,6 +14,7 @@ export class FacebookShareButton extends React.Component {
     }
 
     componentDidMount() {
+        // Create and mount the button as per API instructions
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) return;
@@ -20,6 +26,7 @@ export class FacebookShareButton extends React.Component {
     }
 
     render() {
+        // HTML as given in API
         return (
             <div className='fb-share-button'
                 data-href={this.props.url}
@@ -39,6 +46,8 @@ export class TwitterShareButton extends React.Component {
     }
 
     componentDidMount() {
+
+        // Create and mount the button as per API instructions
         !function(d,s,id){
             var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';
             if(!d.getElementById(id)){
@@ -51,6 +60,7 @@ export class TwitterShareButton extends React.Component {
     }
 
     render() {
+        // HTML as given in API
         return (
             <a href='https://twitter.com/share'
                 className='twitter-share-button'

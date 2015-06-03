@@ -3,11 +3,17 @@ import {AppSettingsModal} from "./AppSettingsModal.jsx"
 import {ImportDataModal} from "components/ImportDataModal.jsx"
 import {UploadDataButton} from "components/UploadDataButton.jsx"
 
+/**
+ * A generic navbar class based on the bootstrap navbar structure.
+ *
+ * Links can be proved as an array of various option objects.
+ */
 export class Navbar extends React.Component {
     render() {
         return (
             <nav className="navbar navbar-default">
                 <div className="container-fluid">
+                    {/* Mobile menu */}
                     <div className="navbar-header">
                         <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                             <span className="sr-only">Toggle navigation</span>
@@ -18,6 +24,7 @@ export class Navbar extends React.Component {
                         <a className="navbar-brand" href="/">Living Dead Fitness Tracker</a>
                     </div>
 
+                    {/* Link list */}
                     <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
                             {
@@ -37,6 +44,7 @@ export class Navbar extends React.Component {
                             }
                         </ul>
 
+                        {/* Other options, such as settings and import */}
                         <ul className="nav navbar-nav navbar-right">
                             <li>
                                 <ModalTrigger modal={<ImportDataModal />} button={true} className="btn btn-default navbar-btn margin-right" buttonText={<UploadDataButton />} />

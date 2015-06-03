@@ -1,4 +1,3 @@
-import {Body} from "components/Body.jsx";
 import {LineChart} from "components/LineChart.jsx";
 import {BarChart} from "components/BarChart.jsx";
 import {RadarChart} from "components/RadarChart.jsx";
@@ -203,7 +202,8 @@ export class DashboardPage extends React.Component {
                                 <thead>
                                     <tr>
                                         <th>Start Time</th>
-                                        <th>End Time</th>
+                                        <th>Duration</th>
+                                        <th>Distance Covered</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -216,7 +216,8 @@ export class DashboardPage extends React.Component {
                                                 return (
                                                     <tr>
                                                         <td>{window.app.moment(run.start_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.start_time * 1000).format(window.app.dayFormat)}</td>
-                                                        <td>{window.app.moment(run.end_time * 1000).format(window.app.timeFormat)} {window.app.moment(run.end_time * 1000).format(window.app.dayFormat)}</td>
+                                                        <td>{ parseInt(run.duration / 60) } mins {run.duration % 60} seconds</td>
+                                                        <td>{Math.round(run.distance)} m</td>
                                                         <td><a className="btn btn-default" href={"/run/" + run._id}><i className="ion ion-eye" /></a></td>
                                                     </tr>
                                                 );
