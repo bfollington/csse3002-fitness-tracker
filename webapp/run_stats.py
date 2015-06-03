@@ -8,8 +8,11 @@ null = None
 '''
 def mps_to_mets(mps):
     mets = (0.2032 * pow(mps, 3)) - (2.1463 * mps * mps) + (10.12 * mps) - 5.9764
+	
+	#If our speed is too slow, just assume walking mets
     if mets < 6:
         mets = 6.0
+	
     return mets
 
 '''
@@ -41,6 +44,9 @@ def calculate_kcal_consumption(avg_speed, duration, height, weight, age, isMale)
 def calculate_kj_consumption(avg_speed, duration, height, weight, age, isMale):
     return 4.1868 * calculate_kcal_consumption(avg_speed, duration, height, weight, age, isMale)
 
+'''
+	Calculates distance between two lat/lon pairs in m
+'''
 def dist(lat1, lon1, lat2, lon2):
     radius = 6371000 # Of Earth. Adjust to run on Mars.
     latDist = (lat2 - lat1) * math.pi / 180.0
@@ -53,6 +59,9 @@ def dist(lat1, lon1, lat2, lon2):
 
     return radius * 2 * math.atan2(math.sqrt(l), math.sqrt(1 - l))
 
+'''
+	Calculates the duration, distance, avg speed, max speed, speed graph and kilojoules burned for the specified run (waypoints)
+'''	
 def calc_statistics(waypoints, height, weight, age, gender):
 
     dict = { }
