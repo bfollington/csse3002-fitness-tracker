@@ -1,8 +1,14 @@
+/**
+ * The import data modal is used to allow the user to upload new data from the
+ * device. The device password can be entered and progress can be observed
+ * through various prompts.
+ */
 export class ImportDataModal extends React.Component {
 
     constructor(props) {
         super.constructor(props);
 
+        // intialise the state
         this.state = {
             importFailed: false,
             importInProgress: false,
@@ -10,39 +16,58 @@ export class ImportDataModal extends React.Component {
         };
     }
 
+    /**
+     * Called when the password field updates
+     * @param  Event e
+     */
     passwordChange(e) {
+        // Store the password in the state for use later
         this.setState({
             password: e.target.value
         });
     }
 
+    /**
+     * Called when an import is triggered, POSTs a request to the server
+     * and returns either success or failure depending on the device
+     * status.
+     */
     beginDataImport() {
 
+        // Update the state for display
         this.setState({importInProgress: true, attemptedImport: true});
 
-        $.post("/api/import_data", {password: this.state.password}, function(result) {
+        // Request w/ password
+        $.post("/api/import_data", {password: this.state.password},
 
-            console.log(result);
-            if (result.success) {
-                this.setState({importFailed: false});
+            function(result) {
 
-                setTimeout(function() {
-                    window.location.reload();
-                }, 500);
-            } else {
-                this.setState({
-                    importFailed: true,
-                    errorMessage: result.error
-                });
-            }
+                if (result.success) {
+                    // Update the state for display
+                    this.setState({importFailed: false});
 
-            this.setState({importInProgress: false});
+                    // Wait a second, then refresh the page
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 500);
+                } else {
 
-        }.bind(this));
+                    // Display the error message to the user
+                    this.setState({
+                        importFailed: true,
+                        errorMessage: result.error
+                    });
+                }
+
+                this.setState({importInProgress: false});
+
+            }.bind(this)
+        );
     }
 
     render() {
 
+        // Before an import is started, this is the modal content
         var beforeImportBody = [
             <p>Enter your password to import your run data</p>,
             <div className="form-group">
@@ -51,6 +76,7 @@ export class ImportDataModal extends React.Component {
             </div>
         ];
 
+        // If an import fails
         var failedImportBody = [
             <div className="alert alert-danger" role="alert"><strong>Import failed</strong>: {this.state.errorMessage}</div>,
             <div className="form-group">
@@ -59,16 +85,19 @@ export class ImportDataModal extends React.Component {
             </div>
         ];
 
+        // While an import is in progress
         var importInProgress = [
             <div className="alert alert-info" role="alert">Import processing...</div>
         ];
 
+        // If an import succeeds
         var successImportBody = [
             <div className="alert alert-success" role="alert">Import succeeded!</div>
         ];
 
         var body;
 
+        // State machine for determining which view to use
         if (this.state.importInProgress) {
             body = importInProgress;
         } else {

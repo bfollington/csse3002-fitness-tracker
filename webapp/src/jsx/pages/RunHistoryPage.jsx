@@ -1,4 +1,3 @@
-import {Body} from "components/Body.jsx";
 import {LineChart} from "components/LineChart.jsx";
 import {BarChart} from "components/BarChart.jsx";
 import {RadarChart} from "components/RadarChart.jsx";

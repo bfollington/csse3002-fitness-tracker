@@ -1,4 +1,3 @@
-import {Body} from "components/Body.jsx";
 import {ModalTrigger} from "components/ModalTrigger.jsx";
 import {ShareRunModal} from "components/ShareRunModal.jsx";
 import {MainNavbar} from "components/MainNavbar.jsx";

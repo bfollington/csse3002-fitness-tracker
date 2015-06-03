@@ -1,4 +1,14 @@
+/**
+ * Modal triggers can be used to open a Bootstrap modal on click of either
+ * a link or button.
+ */
 export class ModalTrigger extends React.Component {
+
+    /**
+     * Trigger the embedded modal within the component.
+     *
+     * This is called by a click usually.
+     */
     triggerModal(e) {
         e.preventDefault();
 
@@ -10,6 +20,7 @@ export class ModalTrigger extends React.Component {
 
         var inner;
 
+        // Render either a button or a link depending on the prop value
         if (this.props.button) {
             inner = <button className={this.props.className} onClick={this.triggerModal.bind(this)}>{this.props.buttonText}</button>
         } else {
