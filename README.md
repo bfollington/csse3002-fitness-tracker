@@ -9,7 +9,7 @@ This repository contains two sub-projects:
 
 ### Structure
 
-The application is front-end heavy, and is build using [React.js](https://facebook.github.io/react/), [ES6 (via babel)](https://babeljs.io/), [SCSS](http://sass-lang.com/) and [Jade](http://jade-lang.com/). All the UI components are defined as React components within `/src/jsx`.
+The application is front-end heavy, and is built using [React.js](https://facebook.github.io/react/), [ES6 (via babel)](https://babeljs.io/), [SCSS](http://sass-lang.com/) and [Jade](http://jade-lang.com/). All the UI components are defined as React components within `/src/jsx`.
 
 ### Database
 
