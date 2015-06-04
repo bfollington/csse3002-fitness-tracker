@@ -290,9 +290,12 @@ bool log_getData(uint8_t *runNumber, LocusEntry *entry) {
 		//We skip (rather than 'error out') invalid entries, as these are quite
 		//common at the start & end of runs. We include this special case check
 		//because it often has a 'valid' checksum while presenting meaningless
-		//data.
-		bool invalid = (entry->fix == 0xFF && entry->checksum == 0xFF);
-		if (!log_getLocusEntry(locus, entry) || invalid) {
+		//data. We also ignore entries with dummny timestamps, as the log chip
+		//will often return 'blank'/erased data.
+		bool invalid = !log_getLocusEntry(locus, entry);
+		invalid |= (entry->fix == 0xFF && entry->checksum == 0xFF);
+		invalid |= (entry->time < 1433300000 || entry->time > 2000000000);
+		if (invalid) {
 			continue;
 		}
 		break;
