@@ -1,5 +1,9 @@
 import {FileNotFoundPage} from "pages/FileNotFoundPage.jsx";
+import {transition} from "pages/controllers/PageTransition.jsx";
 
+/*
+ * Handles transition to the 404 page.
+ */
 export function FileNotFoundController(ctx, next) {
-    React.render(<FileNotFoundPage />, window.app.mountPoint);
+    transition(ctx, next, <FileNotFoundPage />);
 }

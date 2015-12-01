@@ -1,5 +1,9 @@
 import {DashboardPage} from "pages/DashboardPage.jsx";
+import {transition} from "pages/controllers/PageTransition.jsx";
 
+/*
+ * Handles transition to the dashboard page.
+ */
 export function DashboardController(ctx, next) {
-    React.render(<DashboardPage />, window.app.mountPoint);
+    transition(ctx, next, <DashboardPage />);
 }

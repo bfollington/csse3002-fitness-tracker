@@ -1,21 +1,23 @@
-@import 'reset';
 @import 'mixins';
 @import 'variables';
+@import 'util';
 
 html {
     height: 100%;
 }
 
 body {
-    font-family: "Helvetica Neue";
+    font-family: "Helvetica Neue", "Open Sans", sans-serif;
 
     height: 100%;
+
+    background-color: $color-theme-50;
 }
 
 #mount {
   position: relative;
   opacity: 1;
-  -webkit-transition: -webkit-transform 200ms ease-out, opacity 200ms ease-out;
+  -webkit-transition: -webkit-transform 350ms ease-out, opacity 350ms ease-out;
 }
 
 #mount.transition {
@@ -23,3 +25,88 @@ body {
   opacity: 0;
 }
 
+.modal {
+    text-align: left;
+}
+
+.map-canvas {
+    height: 480px;
+    margin: 0;
+    padding: 0;
+
+    border: 1px solid $color-theme-200;
+    border-radius: 3px;
+}
+
+.navbar {
+    background-color: $color-theme-800;
+
+    padding-top: 1em;
+    padding-bottom: 1em;
+
+    border-radius: 0px;
+    border: 0px;
+
+    .navbar-header > a {
+        color: $color-theme-0;
+
+        &:hover {
+            color: $color-theme-200;
+        }
+    }
+
+    .navbar-nav > li > a {
+        color: $color-theme-50;
+
+        &:hover {
+            color: $color-theme-200;
+        }
+    }
+
+    .navbar-btn.btn-default {
+        background-color: $color-theme-800;
+        color: $color-theme-50;
+
+        border-width: 1px;
+
+        &:hover {
+            background-color: $color-theme-700;
+        }
+    }
+
+    .settings-icon {
+        font-size: 1.5em;
+
+        margin: 0;
+    }
+}
+
+.fb-share-button span,
+.fb-share-button iframe {
+    width: 55px! important;
+    height: 20px! important;
+}
+
+.twitter-share-button {
+    position: relative !important;
+    top: 4px;
+    margin-left: 4px;
+}
+
+
+.center-text {
+    text-align: center;
+}
+
+.float-right {
+    float: right;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.center-chart {
+    display: block;
+    margin: 0 auto;
+}

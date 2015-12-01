@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BB215E58-EFE8-47FD-8C54-4AEB4053EEC9}</ProjectGuid>
+    <RootNamespace>Main</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\data\arduino-1.6.3\hardware\arduino\avr\cores\arduino;C:\data\arduino-1.6.3\hardware\adafruit\avr\variants\flora;C:\Users\James\Documents\CSSE3002\Arduino;C:\data\arduino-1.6.3\libraries;C:\data\arduino-1.6.3\hardware\adafruit\avr\libraries;C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers;C:\Users\James\Documents\Arduino\libraries;c:\data\arduino-1.6.3\hardware\tools\avr\avr\include\;c:\data\arduino-1.6.3\hardware\tools\avr\avr\include\avr\;c:\data\arduino-1.6.3\hardware\tools\avr\avr\;c:\data\arduino-1.6.3\hardware\tools\avr\lib\gcc\avr\4.8.1\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>C:\Users\James\Documents\CSSE3002\Arduino\Visual Micro\.Arduino.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
+      <PreprocessorDefinitions>__AVR_ATmega32u4__;__AVR_ATmega32U4__;ARDUINO=163;ARDUINO_MAIN;__AVR__;__avr__;F_CPU=8000000L;__cplusplus;GCC_VERSION=40801;ARDUINO_ARCH_AVR;ARDUINO_AVR_FLORA8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="Main.ino">
+      <FileType>CppCode</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Adafruit_GPS.cpp" />
+    <ClCompile Include="GPSConverter.cpp" />
+    <ClCompile Include="GPSInterface.cpp" />
+    <ClCompile Include="SoftwareSerial.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Adafruit_GPS.h" />
+    <ClInclude Include="GPSConverter.h" />
+    <ClInclude Include="GPSInterface.h" />
+    <ClInclude Include="SoftwareSerial.h" />
+    <ClInclude Include="Visual Micro\.Arduino.vsarduino.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.maximum_size="28672" arduino.upload.speed="57600" visualmicro.package.name="adafruit" arduino.board.property_bag="name=Adafruit Flora&#xD;&#xA;bootloader.low_fuses=0xff&#xD;&#xA;bootloader.high_fuses=0xd8&#xD;&#xA;bootloader.extended_fuses=0xcb&#xD;&#xA;bootloader.file=arduino:caterina/Caterina-Flora8.hex&#xD;&#xA;bootloader.unlock_bits=0x3F&#xD;&#xA;bootloader.lock_bits=0x2F&#xD;&#xA;bootloader.tool=arduino:avrdude&#xD;&#xA;build.mcu=atmega32u4&#xD;&#xA;build.f_cpu=8000000L&#xD;&#xA;build.vid=0x239A&#xD;&#xA;build.pid=0x8004&#xD;&#xA;build.core=arduino:arduino&#xD;&#xA;build.variant=flora&#xD;&#xA;build.board=AVR_FLORA8&#xD;&#xA;build.usb_product=&quot;Adafruit&quot;&#xD;&#xA;build.usb_manufacturer=&quot;Flora&quot;&#xD;&#xA;build.extra_flags={build.usb_flags}&#xD;&#xA;upload.protocol=avr109&#xD;&#xA;upload.maximum_size=28672&#xD;&#xA;upload.speed=57600&#xD;&#xA;upload.disable_flushing=true&#xD;&#xA;upload.use_1200bps_touch=true&#xD;&#xA;upload.wait_for_upload_port=true&#xD;&#xA;upload.tool=arduino:avrdude&#xD;&#xA;vid.0=0x239A&#xD;&#xA;pid.0=0x8004&#xD;&#xA;runtime.ide.path=C:\data\arduino-1.6.3&#xD;&#xA;build.system.path=C:\data\arduino-1.6.3\hardware\adafruit\avr\system&#xD;&#xA;runtime.ide.version=163&#xD;&#xA;originalid=flora8&#xD;&#xA;tools.atprogram.cmd.path=%AVRSTUDIO_EXE_PATH%\atbackend\atprogram&#xD;&#xA;tools.atprogram.cmd.setwinpath=true&#xD;&#xA;tools.atprogram.program.params.verbose=-v&#xD;&#xA;tools.atprogram.program.params.quiet=-q&#xD;&#xA;tools.atprogram.program.pattern=&quot;{cmd.path}&quot; -d {build.mcu} {program.verbose} {program.extra_params} program -c -f &quot;{build.path}\{build.project_name}.hex&quot;&#xD;&#xA;tools.atprogram.program.xpattern=&quot;{cmd.path}&quot; {AVRSTUDIO_BACKEND_CONNECTION} -d {build.mcu} {program.verbose} {program.extra_params} program -c -f &quot;{build.path}\{build.project_name}.hex&quot;&#xD;&#xA;version=1.0.0&#xD;&#xA;vm.platform.root.path=C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\arduino16x&#xD;&#xA;ide.hint=Arduino 1.6 Ide&#xD;&#xA;ide.location.key=Arduino16x&#xD;&#xA;ide.location.ide.winreg=Arduino 1.6.x Application&#xD;&#xA;ide.location.sketchbook.winreg=Arduino 1.6.x Sketchbook&#xD;&#xA;ide.location.sketchbook.preferences=sketchbook.path&#xD;&#xA;ide.location.preferences=%VM_APPDATA_ROAMING%\arduino15\preferences.txt&#xD;&#xA;ide.location.preferences_fallback=%VM_APPDATA_ROAMING%\arduino\preferences.txt&#xD;&#xA;ide.default.version=160&#xD;&#xA;ide.default.package=arduino&#xD;&#xA;ide.default.platform=avr&#xD;&#xA;ide.multiplatform=true&#xD;&#xA;ide.includes=arduino.h&#xD;&#xA;ide.platformswithoutpackage=false&#xD;&#xA;ide.includes.fallback=wprogram.h&#xD;&#xA;ide.extension=ino&#xD;&#xA;ide.extension.fallback=pde&#xD;&#xA;ide.versionGTEQ=160&#xD;&#xA;ide.exe=arduino.exe&#xD;&#xA;ide.hosts=atmel&#xD;&#xA;ide.url=http://arduino.cc/en/Main/Software&#xD;&#xA;ide.help.reference.path={runtime.ide.path}\arduino.cc\en\Reference&#xD;&#xA;vm.debug=true&#xD;&#xA;software=ARDUINO&#xD;&#xA;ssh.user.name=root&#xD;&#xA;ssh.user.default.password=arduino&#xD;&#xA;ssh.host.wwwfiles.path=/www/sd&#xD;&#xA;build.working_directory={runtime.ide.path}&#xD;&#xA;ide.appid=arduino16x&#xD;&#xA;location.sketchbook=C:\Users\James\Documents\Arduino&#xD;&#xA;vm.core.include=arduino.h&#xD;&#xA;vm.boardsource.path=C:\data\arduino-1.6.3\hardware\adafruit\avr&#xD;&#xA;runtime.platform.path=C:\data\arduino-1.6.3\hardware\adafruit\avr&#xD;&#xA;vm.platformname.name=avr&#xD;&#xA;build.arch=AVR&#xD;&#xA;vm.runtime.compiler.showwarnings=false&#xD;&#xA;serial.port.file=COM8&#xD;&#xA;serial.port=COM8&#xD;&#xA;serial.port.num=8&#xD;&#xA;compiler.path=C:\data\arduino-1.6.3\hardware\tools\avr\bin\&#xD;&#xA;extra.time.local=9844572&#xD;&#xA;includes= -I&quot;C:\data\arduino-1.6.3\hardware\arduino\avr\cores\arduino&quot;  -I&quot;C:\data\arduino-1.6.3\hardware\adafruit\avr\variants\flora&quot; &#xD;&#xA;build.path=C:\Users\James\AppData\Local\V.Micro\Arduino\Builds\Main\flora8&#xD;&#xA;build.project_name=Main&#xD;&#xA;build.variant.path=C:\data\arduino-1.6.3\hardware\adafruit\avr\variants\flora&#xD;&#xA;build.core.path=C:\data\arduino-1.6.3\hardware\arduino\avr\cores\arduino&#xD;&#xA;archive_file=core.a&#xD;&#xA;object_file=C:\Users\James\AppData\Local\V.Micro\Arduino\Builds\Main\flora8\SoftwareSerial.cpp.o&#xD;&#xA;source_file=C:\Users\James\AppData\Local\V.Micro\Arduino\Builds\Main\flora8\SoftwareSerial.cpp&#xD;&#xA;object_files=&quot;C:\Users\James\AppData\Local\V.Micro\Arduino\Builds\Main\flora8\Adafruit_GPS.cpp.o&quot; &quot;C:\Users\James\AppData\Local\V.Micro\Arduino\Builds\Main\flora8\GPSConverter.cpp.o&quot; &quot;C:\Users\James\AppData\Local\V.Micro\Arduino\Builds\Main\flora8\Main.cpp.o&quot; &quot;C:\Users\James\AppData\Local\V.Micro\Arduino\Builds\Main\flora8\SoftwareSerial.cpp.o&quot; &#xD;&#xA;build.architecture=avr&#xD;&#xA;vmresolved.compiler.path=C:\data\arduino-1.6.3\hardware\tools\avr\bin\&#xD;&#xA;vmresolved.tools.path=C:\data\arduino-1.6.3\hardware\tools\avr&#xD;&#xA;" visualmicro.application.name="arduino16x" arduino.build.mcu="atmega32u4" arduino.upload.protocol="avr109" arduino.build.f_cpu="8000000L" arduino.board.desc="Adafruit Flora" arduino.board.name="flora8" arduino.upload.port="COM8" visualmicro.platform.name="avr" arduino.build.core="arduino" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
